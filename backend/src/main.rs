@@ -1,8 +1,25 @@
 mod api;
+mod db;
 
 use rocket::fs::NamedFile;
+use serde_derive::Deserialize;
 use rocket::response::status::NotFound;
 use std::path::PathBuf;
+use std::process::exit;
+use std::fs;
+use toml;
+use db::{init_pool};
+#[derive(Deserialize)]
+
+struct Data {
+    config: Config,
+}
+
+#[derive(Deserialize)]
+struct Config {
+    database: String
+}
+
 
 //Import the rocket macros
 #[macro_use]
@@ -33,8 +50,25 @@ async fn index() -> Result<NamedFile, NotFound<String>> {
 // Finlay start the web sever using the launch macro.
 #[launch]
 fn rocket() -> _ {
-    // You must mount the static_files route
+    let config_file = "config/config.toml";
+    let contents = match fs::read_to_string(config_file) {
+        Ok(c) => c,
+        Err(_) => {
+            eprintln!("Could not read file `{}`", config_file);
+            exit(1);
+        }
+    };
+    let data: Data = match toml::from_str(&contents) {
+        Ok(d) => d,
+        Err(_) => {
+            eprintln!("Unable to load data from `{}`", config_file);
+            exit(1);
+        }
+    };
+
+    let pool = init_pool(data.config.database);
     rocket::build()
         .mount("/", routes![index, static_files])
         .mount("/api", api::routes())
+        .manage(pool)
 }

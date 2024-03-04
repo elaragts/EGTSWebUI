@@ -1,3 +1,5 @@
 target/
 ui/dist/
 .idea/
+backend/config/config.toml
+*.db3
