@@ -1,6 +1,9 @@
 target/
-ui/dist/
+frontend/dist
+frontend/styles/output.css
 .idea/
 backend/config.json
 *.db3
+*.db3-shm
+*.db3-wal
 backend/backend
