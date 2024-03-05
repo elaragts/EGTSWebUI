@@ -1,5 +1,6 @@
 target/
 ui/dist/
 .idea/
-backend/config/config.toml
+backend/config.json
 *.db3
+backend/backend
