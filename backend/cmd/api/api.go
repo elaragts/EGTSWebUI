@@ -23,6 +23,7 @@ func apiRoutes() chi.Router {
 	r := chi.NewRouter()
 	apiHandler := handlers.ApiHandler{}
 	r.Get("/leaderboard", apiHandler.Leaderboard)
+	r.Get("/user/{id}", apiHandler.GetUser)
 	return r
 }
 

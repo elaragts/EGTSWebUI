@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/model"
@@ -12,6 +13,7 @@ import (
 type taikoPreparedStatements struct {
 	Leaderboard           *sql.Stmt
 	GetBaidFromAccessCode *sql.Stmt
+	GetPublicProfile      *sql.Stmt
 }
 
 var taikodb *sql.DB
@@ -27,6 +29,7 @@ func initTaikoDB(dataSourceName string) {
 	}
 	taikoStmts.Leaderboard = prepareQuery(taikodb, "internal/database/queries/taiko/leaderboard.sql")
 	taikoStmts.GetBaidFromAccessCode = prepareQuery(taikodb, "internal/database/queries/taiko/getBaidFromAccessCode.sql")
+	taikoStmts.GetPublicProfile = prepareQuery(taikodb, "internal/database/queries/taiko/getPublicProfile.sql")
 	if err = taikodb.Ping(); err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
@@ -72,4 +75,42 @@ func GetBaidFromAccessCode(accessCode string) (uint, bool, error) {
 		return 0, false, err
 	}
 	return baid, true, nil
+}
+
+func GetPublicProfile(baid uint) (model.PublicProfile, error) {
+	var profile model.PublicProfile
+	var costumeDataStr string
+
+	err := taikoStmts.GetPublicProfile.QueryRow(sql.Named("baid", baid)).Scan(
+		&profile.MyDonName,
+		&profile.Title,
+		&profile.AchievementDisplayDifficulty,
+		&costumeDataStr, // Costume data as a JSON string
+		&profile.ColorBody,
+		&profile.ColorFace,
+		&profile.PlayCount,
+		&profile.DanId,
+		&profile.ClearState,
+		&profile.BestScoreRank[0], // Directly scanning into the array elements
+		&profile.BestScoreRank[1],
+		&profile.BestScoreRank[2],
+		&profile.BestScoreRank[3],
+		&profile.BestScoreRank[4],
+		&profile.BestScoreRank[5],
+		&profile.BestScoreRank[6],
+		&profile.BestScoreRank[7],
+		&profile.BestCrown[0],
+		&profile.BestCrown[1],
+		&profile.BestCrown[2],
+	)
+
+	if err != nil {
+		return model.PublicProfile{}, err
+	}
+
+	err = json.Unmarshal([]byte(costumeDataStr), &profile.CostumeData)
+	if err != nil {
+		return model.PublicProfile{}, err
+	}
+	return profile, nil
 }

@@ -73,7 +73,13 @@ func (a AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+	//if use is already logged in
+	_, err := r.Cookie("Authorization")
+	if err == nil {
+		http.Error(w, "User already logged in", http.StatusBadRequest)
+		return
+	}
+	err = r.ParseForm()
 	if err != nil {
 		http.Error(w, "Invalid form", http.StatusBadRequest)
 		return

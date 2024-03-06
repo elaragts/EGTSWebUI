@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"github.com/go-chi/chi/v5"
 	"github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/database"
 	"log"
 	"net/http"
@@ -32,4 +33,20 @@ func (a ApiHandler) Leaderboard(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(leaderboard)
+}
+
+func (a ApiHandler) GetUser(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 10, 16)
+	if err != nil {
+		http.Error(w, "Invalid baid", http.StatusBadRequest)
+		return
+	}
+	profile, err := database.GetPublicProfile(uint(id))
+	if err != nil {
+		http.Error(w, "Error getting profile", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(profile)
 }
