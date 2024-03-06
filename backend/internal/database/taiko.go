@@ -2,48 +2,40 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/model"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
-	"sync"
 )
 
-var db *sql.DB
-var leaderboardStmt *sql.Stmt
+type taikoPreparedStatements struct {
+	Leaderboard           *sql.Stmt
+	GetBaidFromAccessCode *sql.Stmt
+}
+
+var taikodb *sql.DB
+var taikoStmts taikoPreparedStatements
 
 // Once ensures the database connection is initialized only once
-var once sync.Once
 
-func InitTaikoDB(dataSourceName string) {
-	once.Do(func() {
-		var err error
-		db, err = sql.Open("sqlite3", dataSourceName)
-		if err != nil {
-			log.Fatalf("Error opening database: %v", err)
-		}
+func initTaikoDB(dataSourceName string) {
+	var err error
+	taikodb, err = sql.Open("sqlite3", dataSourceName)
+	if err != nil {
+		log.Fatalf("Error opening database: %v", err)
+	}
+	taikoStmts.Leaderboard = prepareQuery(taikodb, "internal/database/queries/taiko/leaderboard.sql")
+	taikoStmts.GetBaidFromAccessCode = prepareQuery(taikodb, "internal/database/queries/taiko/getBaidFromAccessCode.sql")
+	if err = taikodb.Ping(); err != nil {
+		log.Fatalf("Error connecting to the database: %v", err)
+	}
 
-		if err = db.Ping(); err != nil {
-			log.Fatalf("Error connecting to the database: %v", err)
-		}
-		leaderboardStmt, err = db.Prepare(`
-SELECT ud.MyDonName, sbd.BestScore, sbd.BestCrown, sbd.BestScoreRank
-FROM SongBestData sbd
-         INNER JOIN UserData ud ON sbd.Baid = ud.Baid
-         INNER JOIN Card c ON sbd.Baid = c.Baid
-WHERE SongID = ?
-  AND Difficulty = ?
-ORDER BY sbd.BestScore DESC
-LIMIT 10`)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println("Successfully connected to the database")
-	})
+	fmt.Println("Successfully connected to the database")
 }
 
 func GetLeaderboard(songId uint, difficulty uint) ([]model.LeaderboardRecord, error) {
-	rows, err := leaderboardStmt.Query(songId, difficulty)
+	rows, err := taikoStmts.Leaderboard.Query(songId, difficulty)
 	if err != nil {
 		return nil, err
 	}
@@ -68,4 +60,16 @@ func GetLeaderboard(songId uint, difficulty uint) ([]model.LeaderboardRecord, er
 	}
 
 	return ret, nil
+}
+
+func GetBaidFromAccessCode(accessCode string) (uint, bool, error) {
+	var baid uint
+	err := taikoStmts.GetBaidFromAccessCode.QueryRow(accessCode).Scan(&baid)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return 0, false, nil
+		}
+		return 0, false, err
+	}
+	return baid, true, nil
 }

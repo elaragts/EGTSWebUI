@@ -30,6 +30,6 @@ func main() {
 		fmt.Println("Error decoding config:", err)
 		return
 	}
-	database.InitTaikoDB(config.TaikoDBPath)
+	database.InitDBs(config.TaikoDBPath, config.AuthDBPath)
 	api.Run(config.Port, config.DistPath)
 }

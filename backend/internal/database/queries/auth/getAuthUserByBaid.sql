@@ -1,0 +1,4 @@
+SELECT Baid
+FROM users
+WHERE Baid = ?
+LIMIT 1
