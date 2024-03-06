@@ -5,6 +5,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/database"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
 )
@@ -36,9 +37,14 @@ func (a ApiHandler) Leaderboard(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a ApiHandler) GetUser(w http.ResponseWriter, r *http.Request) {
+	accountBaid := uint(math.Round(r.Context().Value("baid").(float64)))
 	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 10, 16)
 	if err != nil {
 		http.Error(w, "Invalid baid", http.StatusBadRequest)
+		return
+	}
+	if accountBaid != uint(id) {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 	profile, err := database.GetPublicProfile(uint(id))

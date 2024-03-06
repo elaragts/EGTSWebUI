@@ -122,6 +122,22 @@ func (a AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		Value:    tokenString,
 		Expires:  expiration,
 		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+		Path:     "/",
+	}
+	http.SetCookie(w, &cookie)
+	w.WriteHeader(http.StatusOK)
+}
+
+func (a AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
+	cookie := http.Cookie{
+		Name:     "Authorization",
+		Value:    "",
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
 		Path:     "/",
 	}
 	http.SetCookie(w, &cookie)

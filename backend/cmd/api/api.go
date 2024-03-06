@@ -4,6 +4,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/app/handlers"
+	myMiddleware "github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/middleware"
 	"log"
 	"net/http"
 )
@@ -23,7 +24,7 @@ func apiRoutes() chi.Router {
 	r := chi.NewRouter()
 	apiHandler := handlers.ApiHandler{}
 	r.Get("/leaderboard", apiHandler.Leaderboard)
-	r.Get("/user/{id}", apiHandler.GetUser)
+	r.With(myMiddleware.RequireAuth).Get("/user/{id}", apiHandler.GetUser)
 	return r
 }
 
@@ -32,5 +33,6 @@ func authRoutes() chi.Router {
 	authHandler := handlers.AuthHandler{}
 	r.Post("/signup", authHandler.Signup)
 	r.Post("/login", authHandler.Login)
+	r.Post("/logout", authHandler.Logout)
 	return r
 }
