@@ -8,3 +8,5 @@ backend/config.json
 *.db3-wal
 backend/backend
 backend/KeifunsTaikoWebUI
+**/.DS_Store
+
