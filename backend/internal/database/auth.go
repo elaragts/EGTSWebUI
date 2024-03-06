@@ -23,9 +23,9 @@ func initAuthDB(dataSourceName string) {
 	if err != nil {
 		log.Fatalf("Error opening database: %v", err)
 	}
-	authStmts.GetAuthUserByUsername = prepareQuery(db, "internal/database/queries/auth/getAuthUserByUsername.sql")
-	authStmts.GetAuthUserByBaid = prepareQuery(db, "internal/database/queries/auth/getAuthUserByBaid.sql")
-	authStmts.InsertAuthUser = prepareQuery(db, "internal/database/queries/auth/insertAuthUser.sql")
+	authStmts.GetAuthUserByUsername = prepareQuery(db, "queries/auth/getAuthUserByUsername.sql")
+	authStmts.GetAuthUserByBaid = prepareQuery(db, "queries/auth/getAuthUserByBaid.sql")
+	authStmts.InsertAuthUser = prepareQuery(db, "queries/auth/insertAuthUser.sql")
 	if err = db.Ping(); err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
@@ -61,7 +61,7 @@ func IsAuthUserUnique(username string, baid uint) (bool, uint, error) {
 }
 
 func InsertAuthUser(user model.AuthUser) error {
-	_, err := authStmts.InsertAuthUser.Exec(user.Username, user.Baid, user.PasswordHash)
+	_, err := authStmts.InsertAuthUser.Exec(user.Baid, user.Username, user.PasswordHash)
 	return err
 }
 

@@ -2,13 +2,17 @@ package database
 
 import (
 	"database/sql"
+	"embed"
+	"io/fs"
 	"log"
-	"os"
 	"sync"
 )
 
+//go:embed queries/taiko/*.sql queries/auth/*.sql
+var sqlFiles embed.FS
+
 func prepareQuery(db *sql.DB, filename string) *sql.Stmt {
-	content, err := os.ReadFile(filename)
+	content, err := fs.ReadFile(sqlFiles, filename)
 	if err != nil {
 		log.Fatalf("Could not read SQL file: %s, error: %v", filename, err)
 	}

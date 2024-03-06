@@ -27,9 +27,9 @@ func initTaikoDB(dataSourceName string) {
 	if err != nil {
 		log.Fatalf("Error opening database: %v", err)
 	}
-	taikoStmts.Leaderboard = prepareQuery(taikodb, "internal/database/queries/taiko/leaderboard.sql")
-	taikoStmts.GetBaidFromAccessCode = prepareQuery(taikodb, "internal/database/queries/taiko/getBaidFromAccessCode.sql")
-	taikoStmts.GetPublicProfile = prepareQuery(taikodb, "internal/database/queries/taiko/getPublicProfile.sql")
+	taikoStmts.Leaderboard = prepareQuery(taikodb, "queries/taiko/leaderboard.sql")
+	taikoStmts.GetBaidFromAccessCode = prepareQuery(taikodb, "queries/taiko/getBaidFromAccessCode.sql")
+	taikoStmts.GetPublicProfile = prepareQuery(taikodb, "queries/taiko/getPublicProfile.sql")
 	if err = taikodb.Ping(); err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
