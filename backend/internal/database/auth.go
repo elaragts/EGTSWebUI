@@ -2,7 +2,9 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
+	"github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/model"
 	"log"
 )
 
@@ -58,7 +60,19 @@ func IsAuthUserUnique(username string, baid uint) (bool, uint, error) {
 	return true, 0, nil
 }
 
-func InsertAuthUser(baid uint, username string, passwordHash string) error {
-	_, err := authStmts.InsertAuthUser.Exec(baid, username, passwordHash)
+func InsertAuthUser(user model.AuthUser) error {
+	_, err := authStmts.InsertAuthUser.Exec(user.Username, user.Baid, user.PasswordHash)
 	return err
+}
+
+func GetAuthUserByUsername(username string) (model.AuthUser, bool, error) {
+	var user model.AuthUser
+	err := authStmts.GetAuthUserByUsername.QueryRow(username).Scan(&user.Baid, &user.Username, &user.PasswordHash)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return user, false, nil
+		}
+		return user, false, err
+	}
+	return user, true, nil
 }

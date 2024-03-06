@@ -1,10 +1,14 @@
 package handlers
 
 import (
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/database"
+	"github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/model"
+	"github.com/keitannunes/KeifunsTaikoWebUI/backend/pkg"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
+	"time"
 )
 
 type AuthHandler struct {
@@ -54,7 +58,11 @@ func (a AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	err = database.InsertAuthUser(baid, username, string(hash))
+	var user model.AuthUser
+	user.Username = username
+	user.Baid = baid
+	user.PasswordHash = string(hash)
+	err = database.InsertAuthUser(user)
 	if err != nil {
 		http.Error(w, "Error inserting user", http.StatusInternalServerError)
 		log.Println(err)
@@ -64,17 +72,52 @@ func (a AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//func (a AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
-//	err := r.ParseForm()
-//	if err != nil {
-//		http.Error(w, "Invalid form", http.StatusBadRequest)
-//		return
-//	}
-//	username := r.Form.Get("username")
-//	password := r.Form.Get("password")
-//	if username == "" || password == "" {
-//		http.Error(w, "Invalid form", http.StatusBadRequest)
-//		log.Printf("Invalid form: username=%s, password=[REDACTED]", username)
-//		return
-//	}
-//}
+func (a AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Invalid form", http.StatusBadRequest)
+		return
+	}
+	username := r.Form.Get("username")
+	password := r.Form.Get("password")
+	if username == "" || password == "" {
+		http.Error(w, "Invalid form", http.StatusBadRequest)
+		log.Printf("Invalid form: username=%s, password=[REDACTED]", username)
+		return
+	}
+	user, found, err := database.GetAuthUserByUsername(username)
+	if err != nil {
+		http.Error(w, "Error getting user", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	if !found {
+		http.Error(w, "Username or Password is incorrect", http.StatusUnauthorized)
+		return
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+	if err != nil {
+		http.Error(w, "Username or Password is incorrect", http.StatusUnauthorized)
+		return
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": user.Baid,
+		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+	})
+	tokenString, err := token.SignedString([]byte(pkg.ConfigVars.SessionSecret))
+	if err != nil {
+		http.Error(w, "Error creating token", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	expiration := time.Now().Add(30 * 24 * time.Hour)
+	cookie := http.Cookie{
+		Name:     "Authorization",
+		Value:    tokenString,
+		Expires:  expiration,
+		HttpOnly: true,
+		Path:     "/",
+	}
+	http.SetCookie(w, &cookie)
+	w.WriteHeader(http.StatusOK)
+}
