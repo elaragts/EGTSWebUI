@@ -2,4 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Add your custom styles here */
+ @font-face {
+        font-family: Taiko;
+        src: url('static/Taiko_No_Tatsujin_Official_Font.ttf');
+      }
+      @font-face {
+        font-family: TaikoKanit;
+        src: url('static/Kanit-Regular.ttf');
+      }
+
+    body {
+        background-color: #1B262C;
+    }
