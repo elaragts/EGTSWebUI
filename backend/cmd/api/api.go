@@ -7,17 +7,25 @@ import (
 	myMiddleware "github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/middleware"
 	"log"
 	"net/http"
+	"path/filepath"
+	"strings"
 )
 
 func Run(port string, distPath string) {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
-	fs := http.FileServer(http.Dir(distPath))
-	r.Handle("/*", http.StripPrefix("/", fs))
+
+	// API and Auth routes
 	r.Mount("/api", apiRoutes())
 	r.Mount("/auth", authRoutes())
-	http.ListenAndServe(port, r)
-	log.Printf("Listening on 127.0.0.1%v", port)
+
+	// Serve static files
+	fileServer(r, "/", http.Dir(distPath), distPath)
+
+	log.Printf("Listening on 127.0.0.1%s", port)
+	if err := http.ListenAndServe(port, r); err != nil {
+		log.Fatalf("Error starting server: %s\n", err)
+	}
 }
 
 func apiRoutes() chi.Router {
@@ -35,4 +43,30 @@ func authRoutes() chi.Router {
 	r.Post("/login", authHandler.Login)
 	r.Post("/logout", authHandler.Logout)
 	return r
+}
+
+// fileServer conveniently sets up a http.FileServer handler to serve
+// static files from a http.FileSystem.
+func fileServer(r chi.Router, path string, root http.FileSystem, distPath string) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit URL parameters.")
+	}
+
+	fs := http.StripPrefix(path, http.FileServer(root))
+
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
+		if _, err := root.Open(r.URL.Path); err != nil {
+			// This ensures that we always serve index.html for any route not recognized
+			// by the API, which lets Vue Router handle the routing
+			http.ServeFile(w, r, filepath.Join(distPath, "index.html"))
+			return
+		}
+		fs.ServeHTTP(w, r)
+	})
 }
