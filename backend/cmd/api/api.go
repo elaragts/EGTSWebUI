@@ -18,7 +18,9 @@ func Run(port string, distPath string) {
 	// API and Auth routes
 	r.Mount("/api", apiRoutes())
 	r.Mount("/auth", authRoutes())
-
+	r.Get("/guide", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "https://rentry.org/TaikoPublic", http.StatusFound)
+	})
 	// Serve static files
 	fileServer(r, "/", http.Dir(distPath), distPath)
 
@@ -42,6 +44,7 @@ func authRoutes() chi.Router {
 	r.Post("/signup", authHandler.Signup)
 	r.Post("/login", authHandler.Login)
 	r.Post("/logout", authHandler.Logout)
+	r.Get("/session", authHandler.Session)
 	return r
 }
 

@@ -5,3 +5,8 @@ type AuthUser struct {
 	Baid         uint
 	PasswordHash string
 }
+
+type SimpleAuthUser struct {
+	Username string
+	Baid     uint
+}

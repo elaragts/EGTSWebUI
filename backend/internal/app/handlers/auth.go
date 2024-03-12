@@ -1,12 +1,14 @@
 package handlers
 
 import (
+	"encoding/json"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/database"
 	"github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/model"
 	"github.com/keitannunes/KeifunsTaikoWebUI/backend/pkg"
 	"golang.org/x/crypto/bcrypt"
 	"log"
+	"math"
 	"net/http"
 	"time"
 )
@@ -126,8 +128,51 @@ func (a AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteLaxMode,
 		Path:     "/",
 	}
+	simpleUser := model.SimpleAuthUser{
+		Username: user.Username,
+		Baid:     user.Baid,
+	}
+
 	http.SetCookie(w, &cookie)
-	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(simpleUser)
+}
+
+func (a AuthHandler) Session(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("Authorization")
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, jwt.ErrSignatureInvalid
+		}
+		return []byte(pkg.ConfigVars.SessionSecret), nil
+	})
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	var simpleUser model.SimpleAuthUser
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		}
+		baid := uint(math.Round(claims["sub"].(float64)))
+		//log baid
+		log.Printf("baid: %d", baid)
+		username, found, _ := database.GetUsernameByBaid(baid)
+		if !found {
+			//print user
+			http.Error(w, "Unauthorized", http.StatusInternalServerError)
+			return
+		}
+		simpleUser = model.SimpleAuthUser{
+			Username: username,
+			Baid:     baid,
+		}
+	}
+	json.NewEncoder(w).Encode(simpleUser)
 }
 
 func (a AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {

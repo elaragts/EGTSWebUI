@@ -10,8 +10,9 @@ import (
 
 type authPreparedStatements struct {
 	GetAuthUserByUsername *sql.Stmt
-	GetAuthUserByBaid     *sql.Stmt
+	GetBaidFromBaid       *sql.Stmt
 	InsertAuthUser        *sql.Stmt
+	GetUsernameFromBaid   *sql.Stmt
 }
 
 var db *sql.DB
@@ -24,8 +25,9 @@ func initAuthDB(dataSourceName string) {
 		log.Fatalf("Error opening database: %v", err)
 	}
 	authStmts.GetAuthUserByUsername = prepareQuery(db, "queries/auth/getAuthUserByUsername.sql")
-	authStmts.GetAuthUserByBaid = prepareQuery(db, "queries/auth/getAuthUserByBaid.sql")
+	authStmts.GetBaidFromBaid = prepareQuery(db, "queries/auth/getBaidFromBaid.sql")
 	authStmts.InsertAuthUser = prepareQuery(db, "queries/auth/insertAuthUser.sql")
+	authStmts.GetUsernameFromBaid = prepareQuery(db, "queries/auth/getUsernameFromBaid.sql")
 	if err = db.Ping(); err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
@@ -48,7 +50,7 @@ func IsAuthUserUnique(username string, baid uint) (bool, uint, error) {
 	if usernameRows.Next() {
 		return false, USERNAMEFOUND, nil
 	}
-	baidRows, err := authStmts.GetAuthUserByBaid.Query(baid)
+	baidRows, err := authStmts.GetBaidFromBaid.Query(baid)
 	if err != nil {
 		return false, 0, err
 	}
@@ -75,4 +77,16 @@ func GetAuthUserByUsername(username string) (model.AuthUser, bool, error) {
 		return user, false, err
 	}
 	return user, true, nil
+}
+
+func GetUsernameByBaid(baid uint) (string, bool, error) {
+	var username string
+	err := authStmts.GetUsernameFromBaid.QueryRow(baid).Scan(&username)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", false, nil
+		}
+		return "", false, err
+	}
+	return username, true, nil
 }
