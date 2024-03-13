@@ -17,7 +17,7 @@ if (authStore.isAuthenticated) {
         </div>
         <div class="w-full bg-cl2 rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
             <div class="p-6 space-y-4 md:space-y-6 sm:p-8 ">
-                <h1 class="text-3xl center-self leading-tight tracking-tight text-cl5">
+                <h1 class="text-3xl center-self leading-tight tracking-tight text-cl5 text-bold">
                     Register
                 </h1>
                 <div class="space-y-4">

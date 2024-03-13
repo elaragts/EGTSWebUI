@@ -25,7 +25,7 @@ const authStore = useAuthStore();
         </div>
         <div
             class="text-xl flex flex-col md:flex-row p-4 mb:2 md:p-0 justify-center md:justify-end md:items-center space-x-0 md:space-x-4 w-full md:w-auto">
-            <NavItem title="Guide" to="/"/>
+            <NavItem title="Guide" to="/guide"/>
             <NavItem title="Leaderboard" to="/logout"/>
             <NavItem v-if="!authStore.isAuthenticated" title="Log In" to="/login"/>
             <NavItem v-if="authStore.isAuthenticated" title="Dashboard" to="/profile"/>
