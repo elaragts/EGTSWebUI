@@ -1,7 +1,5 @@
-
-
 <template>
-  <router-link :to="to" class="block py-2 px-3 text-cl5 rounded font-[Roboto] md:text-2xl sm:text-xl md:bg-transparent md:p-0 hover:text-cl6">
+  <router-link :to="to" class="block py-2 px-3 text-cl5 rounded font-[Roboto] md:text-2xl sm:text-xl md:bg-transparent md:p-0 hover:text-cl6 mx-auto md:mx-0">
     {{ title }}
   </router-link>
 </template>
