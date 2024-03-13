@@ -41,7 +41,7 @@ func apiRoutes() chi.Router {
 func authRoutes() chi.Router {
 	r := chi.NewRouter()
 	authHandler := handlers.AuthHandler{}
-	r.Post("/signup", authHandler.Signup)
+	r.Post("/register", authHandler.Register)
 	r.Post("/login", authHandler.Login)
 	r.Post("/logout", authHandler.Logout)
 	r.Get("/session", authHandler.Session)

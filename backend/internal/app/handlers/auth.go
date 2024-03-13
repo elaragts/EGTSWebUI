@@ -16,7 +16,7 @@ import (
 type AuthHandler struct {
 }
 
-func (a AuthHandler) Signup(w http.ResponseWriter, r *http.Request) {
+func (a AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, "Invalid form", http.StatusBadRequest)
