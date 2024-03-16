@@ -22,7 +22,7 @@ const submitForm = async () => {
     const loginResult = await authStore.login(formData);
     if (loginResult[0]) {
         toast.success('Logged in successfully');
-        await router.push({name: 'home'});
+        await router.push({name: 'dashboard'});
     } else {
         toast.error(loginResult[1]);
     }

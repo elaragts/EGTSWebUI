@@ -4,13 +4,13 @@ import {useAuthStore} from "@/store/authStore";
 import router from "@/router";
 const authStore = useAuthStore();
 if (authStore.isAuthenticated) {
-    router.push({name: 'home'});
+    router.push({name: 'dashboard'});
 }
 
 </script>
 
 <template>
-    <div class="flex flex-col items-center justify-center px-6 py-5 mx-auto md:h-screen lg:py-0">
+    <div class="flex flex-col items-center justify-center px-6 py-5 mx-auto md:my-16 lg:py-0">
         <div class="flex flex-col items-center space-y-5 mb-6 text-4xl">
             <img class="w-20 h-20 mr-2" src="../assets/taiko.png" alt="logo"/>
             <h1 class="font-[taiko] text-center">Taiko Public Server</h1>

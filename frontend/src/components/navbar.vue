@@ -16,7 +16,7 @@ const authStore = useAuthStore();
 
 <template>
     <nav
-        class="flex flex-col md:flex-row text-center sm:text-left sm:justify-between py-4 px-6 bg-cl1 shadow sm:items-baseline w-full items-center md:items-center">
+        class="flex flex-col h-16 md:flex-row text-center sm:text-left sm:justify-between py-4 px-6 bg-cl1 shadow sm:items-baseline w-full items-center md:items-center">
         <div class="mb-2 sm:mb-0 flex items-center justify-center md:justify-start w-full md:w-auto">
             <router-link to="/" class="flex items-center justify-center md:justify-start">
                 <img src="../assets/taiko.png" class="mr-3 h-10 hidden md:block" alt="Logo"/>
@@ -28,7 +28,7 @@ const authStore = useAuthStore();
             <NavItem title="Guide" to="/guide"/>
             <NavItem title="Leaderboard" to="/logout"/>
             <NavItem v-if="!authStore.isAuthenticated" title="Log In" to="/login"/>
-            <NavItem v-if="authStore.isAuthenticated" title="Dashboard" to="/profile"/>
+            <NavItem v-if="authStore.isAuthenticated" title="Dashboard" to="/dashboard"/>
         </div>
     </nav>
 </template>

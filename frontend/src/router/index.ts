@@ -4,6 +4,7 @@ import LoginView from '../views/LoginView.vue'
 import LogoutView from '../views/LogoutView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import GuideView from '../views/GuideView.vue'
+import DashboardView from '../views/DashboardView.vue'
 
 const router = createRouter({
     history: createWebHistory("/"),
@@ -32,6 +33,11 @@ const router = createRouter({
             path: '/guide',
             name: 'guide',
             component: GuideView
+        },
+        {
+            path: '/dashboard',
+            name: 'dashboard',
+            component: DashboardView
         }
     ]
 })
