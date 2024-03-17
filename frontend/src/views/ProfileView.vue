@@ -1,6 +1,11 @@
 <script setup lang="ts">
 
 </script>
+
 <template>
-Welcome to Keifun's TaikoWebUI
+Profile View
 </template>
+
+<style scoped>
+
+</style>

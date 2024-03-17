@@ -27,8 +27,13 @@ func (a AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	accessCode := r.Form.Get("accessCode")
 	if username == "" || password == "" || accessCode == "" {
 		http.Error(w, "Invalid form", http.StatusBadRequest)
-		log.Printf("Invalid form: username=%s, password=[REDACTED], accessCode=%s", username, accessCode)
+		//log.Printf("Invalid form: username=%s, password=[REDACTED], accessCode=%s", username, accessCode)
 		return
+	}
+	if len(username) > 20 {
+		http.Error(w, "Username must be less than or equal to 20 characters long", http.StatusBadRequest)
+		return
+
 	}
 	baid, doesExist, err := database.GetBaidFromAccessCode(accessCode)
 	if err != nil {

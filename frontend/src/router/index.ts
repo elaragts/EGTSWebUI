@@ -5,6 +5,9 @@ import LogoutView from '../views/LogoutView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import GuideView from '../views/GuideView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import LeaderboardView from "@/views/LeaderboardView.vue";
+import profileView from "@/views/ProfileView.vue";
+import editProfileView from "@/views/EditProfileView.vue";
 
 const router = createRouter({
     history: createWebHistory("/"),
@@ -37,7 +40,22 @@ const router = createRouter({
         {
             path: '/dashboard',
             name: 'dashboard',
-            component: DashboardView
+            component: DashboardView,
+            children: [
+                {
+                    path: 'profile',
+                    component: profileView
+                },
+                {
+                    path: 'edit',
+                    component: editProfileView
+                }
+            ]
+        },
+        {
+            path: '/leaderboard',
+            name: 'leaderboard',
+            component: LeaderboardView
         }
     ]
 })

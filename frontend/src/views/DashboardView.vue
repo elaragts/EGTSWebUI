@@ -4,7 +4,10 @@ import DashboardSidebar from "@/components/organisms/DashboardSidebar.vue";
 </script>
 
 <template>
-<DashboardSidebar/>
+    <div class="flex">
+        <DashboardSidebar/>
+        <router-view></router-view>
+    </div>
 </template>
 
 <style scoped>
