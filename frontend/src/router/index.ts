@@ -8,6 +8,11 @@ import DashboardView from '../views/DashboardView.vue'
 import LeaderboardView from "@/views/LeaderboardView.vue";
 import profileView from "@/views/ProfileView.vue";
 import editProfileView from "@/views/EditProfileView.vue";
+import EditProfile from "@/components/organisms/EditProfile.vue";
+import EditSongOptions from "@/components/organisms/EditSongOptions.vue";
+import EditCostume from "@/components/organisms/EditCostume.vue";
+import FavSongsView from "@/views/FavSongsView.vue";
+import SettingsView from "@/views/SettingsView.vue";
 
 const router = createRouter({
     history: createWebHistory("/"),
@@ -48,7 +53,33 @@ const router = createRouter({
                 },
                 {
                     path: 'edit',
-                    component: editProfileView
+                    component: editProfileView,
+                    children: [
+                        {
+                            path: '',
+                            redirect: '/dashboard/edit/profile'
+                        },
+                        {
+                            path: 'profile',
+                            component: EditProfile,
+                        },
+                        {
+                            path: 'song-options',
+                            component: EditSongOptions,
+                        },
+                        {
+                            path: 'costume',
+                            component: EditCostume,
+                        }
+                    ]
+                },
+                {
+                    path: 'favourited-songs',
+                    component: FavSongsView
+                },
+                {
+                    path: 'settings',
+                    component: SettingsView
                 }
             ]
         },

@@ -18,6 +18,7 @@ func Run(port string, distPath string) {
 	// API and Auth routes
 	r.Mount("/api", apiRoutes())
 	r.Mount("/auth", authRoutes())
+	r.Mount("/updater", updaterRoutes())
 	r.Get("/guide", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "https://rentry.org/TaikoPublic", http.StatusFound)
 	})
@@ -45,6 +46,14 @@ func authRoutes() chi.Router {
 	r.Post("/login", authHandler.Login)
 	r.Post("/logout", authHandler.Logout)
 	r.Get("/session", authHandler.Session)
+	return r
+}
+
+func updaterRoutes() chi.Router {
+	r := chi.NewRouter()
+	updaterHandler := handlers.UpdaterHandler{}
+	r.Get("/version", updaterHandler.GetUpdaterVersion)
+	r.Post("/releases/{name}", updaterHandler.Releases)
 	return r
 }
 

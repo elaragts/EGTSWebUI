@@ -4,9 +4,9 @@
 
 <template>
     <div class="font-sans px-4 py-8 text-cl5 bg-cl2 rounded m-5">
-        <h2 id="tps-will-soon-update-to-3906" class="text-2xl font-bold mb-4">TPS WILL SOON UPDATE TO 39.06</h2>
-        <h2 id="tps-setup---connecting-and-using-tps-which-is-a-public-chn-server" class="text-2xl font-bold mb-4">TPS
-            SETUP - Connecting and using TPS, which is a public CHN server</h2>
+        <h2 id="tps-will-soon-update-to-3906" class="text-2xl font-bold mb-4">EGTS WILL SOON UPDATE TO 39.06</h2>
+        <h2 id="tps-setup---connecting-and-using-tps-which-is-a-public-chn-server" class="text-2xl font-bold mb-4">EGTS
+            SETUP - Connecting and using EGTS, which is a public CHN server</h2>
         <p class="mb-4"><strong>TO USE TPS, YOU MUST DOWNLOAD THE TPS PACK FROM THE LINK DOWN BELOW.</strong><br/>
             <a href="https://canary.discord.com/channels/859872100860035113/859878646738583553/1204233371077709824"
                class="text-cl6 hover:underline">https://canary.discord.com/channels/859872100860035113/859878646738583553/1204233371077709824</a><br/>

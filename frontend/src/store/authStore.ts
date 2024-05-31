@@ -16,8 +16,7 @@ export const useAuthStore = defineStore('auth', {
             switch (response.status) {
                 case 200:
                     const res = await response.json();
-                    this.username = res.Username;
-                    this.baid = res.Baid;
+                    this.username = res.username;
                     this.isAuthenticated = true;
                     break;
                 case 401:

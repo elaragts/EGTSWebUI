@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+import "@/index.css"
 </script>
 
 <template>
@@ -14,24 +14,25 @@
             <option>Song Options</option>
         </select>
     </div>
-    <ul class="hidden text-sm font-medium text-center text-gray-500 rounded-lg shadow sm:flex">
+    <ul class="hidden text-sm font-medium text-center rounded-lg shadow sm:flex m-1">
         <li class="w-full focus-within:z-10">
-            <a href="#"
-               class="inline-block w-full p-4 text-gray-900 bg-gray-100 border-r border-gray-200 rounded-s-lg focus:ring-4 focus:ring-blue-300 active focus:outline-none "
-               aria-current="page">Profile</a>
+            <RouterLink to="/dashboard/edit/profile"
+               class="inline-block w-full p-4 bg-white hover:text-gray-700 border-r border-gray-200 rounded-s-lg active focus:outline-none">Profile</RouterLink>
         </li>
         <li class="w-full focus-within:z-10">
-            <a href="#"
-               class="inline-block w-full p-4 bg-white border-r border-gray-200 hover:text-gray-700 hover:bg-gray-50 focus:ring-4 focus:ring-blue-300 focus:outline-none">Costume</a>
+            <RouterLink to="/dashboard/edit/costume"
+               class="inline-block w-full p-4 bg-white border-r border-gray-200 hover:text-gray-700 hover:bg-gray-50 focus:outline-none">Costume</RouterLink>
         </li>
         <li class="w-full focus-within:z-10">
-            <a href="#"
-               class="inline-block w-full p-4 bg-white border-s-0 border-gray-200 rounded-e-lg hover:text-gray-700 hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-blue-300">Song Options</a>
+            <RouterLink to="/dashboard/edit/song-options"
+               class="inline-block w-full p-4 bg-white border-s-0 border-gray-200 rounded-e-lg hover:text-gray-700 hover:bg-gray-50">Song Options</RouterLink>
         </li>
     </ul>
 
 </template>
 
 <style scoped>
-
+.router-link-active {
+    @apply text-gray-900 bg-gray-100
+}
 </style>

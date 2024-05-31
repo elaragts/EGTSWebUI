@@ -6,7 +6,7 @@ import DashboardSidebar from "@/components/organisms/DashboardSidebar.vue";
 <template>
     <div class="flex">
         <DashboardSidebar/>
-        <router-view></router-view>
+        <router-view/>
     </div>
 </template>
 

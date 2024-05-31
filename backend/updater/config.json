@@ -1,0 +1,12 @@
+{
+  "version": "0.1.0",
+  "releases": {
+    "latest": {
+        "version": "2.0",
+        "name": "latest",
+        "uri": "https://google.com",
+        "password": "",
+        "deleteCabinet": "01.0"
+    }
+  }
+}

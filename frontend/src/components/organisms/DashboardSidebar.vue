@@ -36,7 +36,7 @@ watch(() => authStore.isAuthenticated, (newVal) => {
                     </div>
                     Profile
                 </RouterLink>
-                <RouterLink to="/dashboard/edit" role="button" tabindex="0"
+                <RouterLink to="/dashboard/edit/profile" role="button" tabindex="0"
                      class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                     <div class="grid place-items-center mr-4">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"
@@ -48,7 +48,7 @@ watch(() => authStore.isAuthenticated, (newVal) => {
                     </div>
                     Edit Profile
                 </RouterLink>
-            <div role="button" tabindex="0"
+            <RouterLink to="/dashboard/favourited-songs" role="button" tabindex="0"
                  class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                 <div class="grid place-items-center mr-4">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -9 135 119" fill="currentColor"
@@ -59,8 +59,8 @@ watch(() => authStore.isAuthenticated, (newVal) => {
                     </svg>
                 </div>
                 Favourited Songs
-            </div>
-            <div role="button" tabindex="0"
+            </RouterLink>
+            <router-link to="/dashboard/settings" role="button" tabindex="0"
                  class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                 <div class="grid place-items-center mr-4">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
@@ -71,7 +71,7 @@ watch(() => authStore.isAuthenticated, (newVal) => {
                     </svg>
                 </div>
                 Settings
-            </div>
+            </router-link>
             <RouterLink role="button" tabindex="0" to="/logout"
                         class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                 <div class="grid place-items-center mr-4">
