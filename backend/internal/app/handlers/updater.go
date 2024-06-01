@@ -2,10 +2,12 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/keitannunes/KeifunsTaikoWebUI/backend/updater"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type UpdaterHandler struct{}
@@ -23,7 +25,7 @@ func (a UpdaterHandler) Releases(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req struct {
-		Verison  string `json:"version"`
+		Version  string `json:"version"`
 		Password string `json:"password"`
 	}
 
@@ -36,7 +38,7 @@ func (a UpdaterHandler) Releases(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	if req.Verison == release.Version {
+	if req.Version == fmt.Sprintf("%s$%s", release.Name, release.Version) {
 		http.Error(w, "Already up to date", http.StatusNotModified)
 		return
 	}
@@ -48,17 +50,34 @@ func (a UpdaterHandler) Releases(w http.ResponseWriter, r *http.Request) {
 		DeleteCabinet bool   `json:"deleteCabinet"`
 	}
 	ret.Version = release.Version
-	ret.URI = release.URI
+	//	ret.URI = release.URI
 	ret.Name = release.Name
-	currVer, err := strconv.ParseFloat(req.Verison, 64)
+	parts := strings.Split(req.Version, "$") // "latest$1.0" -> ["latest", "1.0"]
+	if len(parts) != 2 || parts[0] != release.Name {
+		ret.URI = release.FullDownloadURI
+		ret.DeleteCabinet = true
+		json.NewEncoder(w).Encode(ret)
+		return
+	}
+	currVer, err := strconv.ParseFloat(parts[1], 64)
 	if err != nil {
 		http.Error(w, "Invalid version number", http.StatusBadRequest)
 		return
 	}
+	minimumQuickDownloadVer, err := strconv.ParseFloat(release.MinimumQuickDownloadVer, 64)
+	if err != nil {
+		http.Error(w, "Minimum Quick Download Version Error (Contact EGTS Admins)", http.StatusBadRequest)
+		return
+	}
 	cabinetVer, err := strconv.ParseFloat(release.Cabinet, 64)
 	if err != nil {
-		http.Error(w, "Cabinet Version Error (Contact TPS Admins)", http.StatusBadRequest)
+		http.Error(w, "Cabinet Version Error (Contact EGTS Admins)", http.StatusBadRequest)
 		return
+	}
+	if currVer < minimumQuickDownloadVer {
+		ret.URI = release.FullDownloadURI
+	} else {
+		ret.URI = release.QuickDownloadURI
 	}
 	if currVer < cabinetVer {
 		ret.DeleteCabinet = true

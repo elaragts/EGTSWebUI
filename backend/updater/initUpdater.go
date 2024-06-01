@@ -12,11 +12,13 @@ type Config struct {
 }
 
 type Release struct {
-	Version  string `json:"version"`
-	URI      string `json:"uri"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
-	Cabinet  string `json:"deleteCabinet"`
+	Version                 string `json:"version"`
+	QuickDownloadURI        string `json:"quickDownloadURI"`
+	FullDownloadURI         string `json:"fullDownloadURI"`
+	Password                string `json:"password"`
+	Name                    string `json:"name"`
+	Cabinet                 string `json:"deleteCabinet"`
+	MinimumQuickDownloadVer string `json:"minimumQuickDownloadVer"`
 }
 
 var UpdaterVars Config

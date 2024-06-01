@@ -2,11 +2,13 @@
   "version": "0.1.0",
   "releases": {
     "latest": {
-        "version": "2.0",
+        "version": "2.1",
         "name": "latest",
-        "uri": "https://google.com",
+        "quickDownloadURI": "https://quick.com",
+        "fullDownloadURI": "https://full.com",
         "password": "",
-        "deleteCabinet": "01.0"
+        "deleteCabinet": "01.0",
+        "minimumQuickDownloadVer": "2.0"
     }
   }
 }
