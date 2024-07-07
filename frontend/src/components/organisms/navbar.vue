@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import NavItem from './atoms/navitem.vue'
+import NavItem from '../atoms/navitem.vue'
 import {useAuthStore} from "@/store/authStore";
 
 const authStore = useAuthStore();
@@ -19,7 +19,7 @@ const authStore = useAuthStore();
         class="flex flex-col h-16 md:flex-row text-center sm:text-left sm:justify-between py-4 px-6 bg-cl1 shadow sm:items-baseline w-full items-center md:items-center">
         <div class="mb-2 sm:mb-0 flex items-center justify-center md:justify-start w-full md:w-auto">
             <router-link to="/" class="flex items-center justify-center md:justify-start">
-                <img src="../assets/taiko.png" class="mr-3 h-10 hidden md:block" alt="Logo"/>
+                <img src="../../assets/taiko.png" class="mr-3 h-10 hidden md:block" alt="Logo"/>
                 <span class="text-2xl font-semibold whitespace-nowrap text-cl5 font-[Taiko] text-center md:text-left">Taiko Public Server</span>
             </router-link>
         </div>
