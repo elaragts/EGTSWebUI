@@ -97,12 +97,13 @@
                 <label for="courseDifficulty" class="text-sm my-1">Course</label>
                 <select id="courseDifficulty"
                         class="w-full bg-transparent focus:outline-none focus:ring-0 focus:border-gray-200 h-10 text-base">
-                  <option value="0">Set up each time</option>
-                  <option value="1">Easy</option>
-                  <option value="2">Normal</option>
-                  <option value="3">Hard</option>
-                  <option value="4">Oni</option>
-                  <option value="5">Ura Oni</option>
+                  <option value="0">None</option>
+                  <option value="1">Set up each time</option>
+                  <option value="2">Easy</option>
+                  <option value="3">Normal</option>
+                  <option value="4">Hard</option>
+                  <option value="5">Oni</option>
+                  <option value="6">Ura Oni</option>
                 </select>
               </div>
               <div class="flex flex-col border-b border-cl6 px-0 w-full md:w-2/12">
