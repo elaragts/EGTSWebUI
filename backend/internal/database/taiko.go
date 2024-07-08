@@ -14,6 +14,7 @@ type taikoPreparedStatements struct {
 	Leaderboard           *sql.Stmt
 	GetBaidFromAccessCode *sql.Stmt
 	GetPublicProfile      *sql.Stmt
+	GetProfileOptions     *sql.Stmt
 }
 
 var taikodb *sql.DB
@@ -30,6 +31,7 @@ func initTaikoDB(dataSourceName string) {
 	taikoStmts.Leaderboard = prepareQuery(taikodb, "queries/taiko/leaderboard.sql")
 	taikoStmts.GetBaidFromAccessCode = prepareQuery(taikodb, "queries/taiko/getBaidFromAccessCode.sql")
 	taikoStmts.GetPublicProfile = prepareQuery(taikodb, "queries/taiko/getPublicProfile.sql")
+	taikoStmts.GetProfileOptions = prepareQuery(taikodb, "queries/taiko/getProfileOptions.sql")
 	if err = taikodb.Ping(); err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
@@ -113,4 +115,25 @@ func GetPublicProfile(baid uint) (model.PublicProfile, error) {
 		return model.PublicProfile{}, err
 	}
 	return profile, nil
+}
+
+func GetProfileOptions(baid uint) (model.ProfileOptions, error) {
+	var profileOptions model.ProfileOptions
+
+	err := taikoStmts.GetProfileOptions.QueryRow(baid).Scan(
+		&profileOptions.MyDonName,
+		&profileOptions.Title,
+		&profileOptions.Language,
+		&profileOptions.TitlePlateId,
+		&profileOptions.DisplayAchievement,
+		&profileOptions.AchievementDisplayDifficulty,
+		&profileOptions.DisplayDan,
+		&profileOptions.DifficultySettingArray,
+	)
+
+	if err != nil {
+		return model.ProfileOptions{}, err
+	}
+
+	return profileOptions, nil
 }

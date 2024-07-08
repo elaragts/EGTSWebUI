@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/go-chi/chi/v5"
 	"github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/database"
 	"log"
@@ -13,6 +14,19 @@ import (
 type ApiHandler struct {
 }
 
+func verifyClientBaid(w http.ResponseWriter, r *http.Request) (uint, error) {
+	accountBaid := uint(math.Round(r.Context().Value("baid").(float64)))
+	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 10, 16)
+	if err != nil {
+		http.Error(w, "Invalid baid", http.StatusBadRequest)
+		return 0, err
+	}
+	if accountBaid != uint(id) {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return 0, errors.New("unauthorized")
+	}
+	return uint(id), nil
+}
 func (a ApiHandler) Leaderboard(w http.ResponseWriter, r *http.Request) {
 	songIdParam := r.URL.Query().Get("songId")
 	difficultyParam := r.URL.Query().Get("difficulty")
@@ -37,17 +51,12 @@ func (a ApiHandler) Leaderboard(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a ApiHandler) GetUser(w http.ResponseWriter, r *http.Request) {
-	accountBaid := uint(math.Round(r.Context().Value("baid").(float64)))
-	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 10, 16)
+	id, err := verifyClientBaid(w, r)
 	if err != nil {
-		http.Error(w, "Invalid baid", http.StatusBadRequest)
 		return
 	}
-	if accountBaid != uint(id) {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-	profile, err := database.GetPublicProfile(uint(id))
+
+	profile, err := database.GetPublicProfile(id)
 	if err != nil {
 		http.Error(w, "Error getting profile", http.StatusInternalServerError)
 		log.Println(err)
@@ -55,4 +64,19 @@ func (a ApiHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(profile)
+}
+
+func (a ApiHandler) GetProfileOptions(w http.ResponseWriter, r *http.Request) {
+	id, err := verifyClientBaid(w, r)
+	if err != nil {
+		return
+	}
+	profileOptions, err := database.GetProfileOptions(id)
+	if err != nil {
+		http.Error(w, "Error getting profile options", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(profileOptions)
 }

@@ -38,7 +38,7 @@ func (a UpdaterHandler) Releases(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	if req.Version == fmt.Sprintf("%s$%s", release.Name, release.Version) {
+	if req.Version == fmt.Sprintf("%s$%s", name, release.Version) {
 		http.Error(w, "Already up to date", http.StatusNotModified)
 		return
 	}
@@ -49,7 +49,7 @@ func (a UpdaterHandler) Releases(w http.ResponseWriter, r *http.Request) {
 		Name          string `json:"name"`
 		DeleteCabinet bool   `json:"deleteCabinet"`
 	}
-	ret.Version = fmt.Sprintf("%s$%s", release.Name, release.Version)
+	ret.Version = fmt.Sprintf("%s$%s", name, release.Version)
 	//	ret.URI = release.URI
 	ret.Name = release.Name
 	parts := strings.Split(req.Version, "$") // "latest$1.0" -> ["latest", "1.0"]
