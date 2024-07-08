@@ -36,6 +36,9 @@ func apiRoutes() chi.Router {
 	apiHandler := handlers.ApiHandler{}
 	r.Get("/leaderboard", apiHandler.Leaderboard)
 	r.With(myMiddleware.RequireAuth).Get("/user/{id}", apiHandler.GetUser)
+	r.With(myMiddleware.RequireAuth).Get("/user/{id}/profile_options", apiHandler.GetProfileOptions)
+	//	r.With(myMiddleware.RequireAuth).Put("/user/{id}/profile_options", apiHandler.PutProfileOptions)
+
 	return r
 }
 
