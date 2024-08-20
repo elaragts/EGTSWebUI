@@ -5,7 +5,8 @@ SELECT MyDonName,
        DisplayAchievement,
        AchievementDisplayDifficulty,
        DisplayDan,
-       DifficultySettingArray
+       DifficultySettingCourse,
+       DifficultySettingSort,
+       DifficultySettingStar
 FROM UserData
 WHERE Baid = ?
-

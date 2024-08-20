@@ -1,12 +1,12 @@
 package model
 
 type AuthUser struct {
-	Username     string
-	Baid         uint
-	PasswordHash string
+	Username     string `json:"username"`
+	Baid         uint   `json:"baid"`
+	PasswordHash string `json:"passwordHash"`
 }
 
 type SimpleAuthUser struct {
-	Username string
-	Baid     uint
+	Username string `json:"username"`
+	Baid     uint   `json:"baid"`
 }

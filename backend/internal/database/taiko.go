@@ -15,6 +15,9 @@ type taikoPreparedStatements struct {
 	GetBaidFromAccessCode *sql.Stmt
 	GetPublicProfile      *sql.Stmt
 	GetProfileOptions     *sql.Stmt
+	GetCostumeOptions     *sql.Stmt
+	GetSongOptions        *sql.Stmt
+	UpdateUser            *sql.Stmt
 }
 
 var taikodb *sql.DB
@@ -32,6 +35,10 @@ func initTaikoDB(dataSourceName string) {
 	taikoStmts.GetBaidFromAccessCode = prepareQuery(taikodb, "queries/taiko/getBaidFromAccessCode.sql")
 	taikoStmts.GetPublicProfile = prepareQuery(taikodb, "queries/taiko/getPublicProfile.sql")
 	taikoStmts.GetProfileOptions = prepareQuery(taikodb, "queries/taiko/getProfileOptions.sql")
+	taikoStmts.GetCostumeOptions = prepareQuery(taikodb, "queries/taiko/getCostumeOptions.sql")
+	taikoStmts.GetSongOptions = prepareQuery(taikodb, "queries/taiko/getSongOptions.sql")
+	taikoStmts.UpdateUser = prepareQuery(taikodb, "queries/taiko/updateUser.sql")
+
 	if err = taikodb.Ping(); err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
@@ -45,7 +52,7 @@ func GetLeaderboard(songId uint, difficulty uint) ([]model.LeaderboardRecord, er
 		return nil, err
 	}
 	defer rows.Close()
-	ret := []model.LeaderboardRecord{}
+	var ret []model.LeaderboardRecord
 
 	// Iterate over the rows
 	for rows.Next() {
@@ -128,7 +135,9 @@ func GetProfileOptions(baid uint) (model.ProfileOptions, error) {
 		&profileOptions.DisplayAchievement,
 		&profileOptions.AchievementDisplayDifficulty,
 		&profileOptions.DisplayDan,
-		&profileOptions.DifficultySettingArray,
+		&profileOptions.DifficultySettingCourse,
+		&profileOptions.DifficultySettingSort,
+		&profileOptions.DifficultySettingStar,
 	)
 
 	if err != nil {
@@ -136,4 +145,100 @@ func GetProfileOptions(baid uint) (model.ProfileOptions, error) {
 	}
 
 	return profileOptions, nil
+}
+
+func GetCostumeOptions(baid uint) (model.CostumeOptions, error) {
+	var costumeOptions model.CostumeOptions
+
+	err := taikoStmts.GetCostumeOptions.QueryRow(baid).Scan(
+		&costumeOptions.CurrentBody,
+		&costumeOptions.CurrentFace,
+		&costumeOptions.CurrentHead,
+		&costumeOptions.CurrentKigurumi,
+		&costumeOptions.CurrentPuchi,
+		&costumeOptions.ColorBody,
+		&costumeOptions.ColorFace,
+		&costumeOptions.ColorLimb,
+	)
+
+	if err != nil {
+		return model.CostumeOptions{}, err
+	}
+
+	return costumeOptions, nil
+}
+
+func GetSongOptions(baid uint) (model.SongOptions, error) {
+	var songOptions model.SongOptions
+
+	var optionSetting uint8
+
+	err := taikoStmts.GetSongOptions.QueryRow(baid).Scan(
+		&optionSetting,
+		&songOptions.IsSkipOn,
+		&songOptions.IsVoiceOn,
+		&songOptions.SelectedToneId,
+		&songOptions.NotesPosition,
+	)
+
+	if err != nil {
+		return model.SongOptions{}, err
+	}
+
+	// OptionSetting is an 8-bit uint where when counting bits LEFT TO RIGHT:
+	// bits 1-4 are speedId,
+	// bit 5 is isVanish bool, bit 6 is isInverse bool
+	// and bits 7-8 are randomId where 01 = messy and 10 = whimsical and 00 = none
+	songOptions.SpeedId = uint((optionSetting & 0b11110000) >> 4) // first 4 bits on the left
+	songOptions.IsVanishOn = (optionSetting & 0b00001000) != 0    // 5th bit from the left
+	songOptions.IsInverseOn = (optionSetting & 0b00000100) != 0   // 6th bit from the left
+	songOptions.RandomId = uint(optionSetting & 0b00000011)       // last 2 bits
+
+	return songOptions, nil
+}
+
+func UpdateUser(baid uint, profileSettings model.ProfileSettings) error {
+
+	var optionSetting uint8
+
+	// note that bits are being counted left to right
+	optionSetting = uint8(profileSettings.SongOptions.SpeedId << 4) // storing speed id in the first 4 bits
+	if profileSettings.SongOptions.IsVanishOn {
+		optionSetting |= 0b00001000
+		// storing vanish boolean in the 5th bit
+	}
+	if profileSettings.SongOptions.IsInverseOn {
+		optionSetting |= 0b00000100
+		// storing inverse boolean in the 6th bit
+	}
+	optionSetting |= uint8(profileSettings.SongOptions.RandomId) // storing random id in the last 2 bits
+
+	_, err := taikoStmts.UpdateUser.Exec(
+		profileSettings.ProfileOptions.MyDonName,
+		profileSettings.ProfileOptions.Title,
+		profileSettings.ProfileOptions.Language,
+		profileSettings.ProfileOptions.TitlePlateId,
+		profileSettings.ProfileOptions.DisplayAchievement,
+		profileSettings.ProfileOptions.AchievementDisplayDifficulty,
+		profileSettings.ProfileOptions.DisplayDan,
+		profileSettings.ProfileOptions.DifficultySettingCourse,
+		profileSettings.ProfileOptions.DifficultySettingStar,
+		profileSettings.ProfileOptions.DifficultySettingSort,
+		profileSettings.CostumeOptions.CurrentBody,
+		profileSettings.CostumeOptions.CurrentFace,
+		profileSettings.CostumeOptions.CurrentHead,
+		profileSettings.CostumeOptions.CurrentKigurumi,
+		profileSettings.CostumeOptions.CurrentPuchi,
+		profileSettings.CostumeOptions.ColorBody,
+		profileSettings.CostumeOptions.ColorFace,
+		profileSettings.CostumeOptions.ColorLimb,
+		profileSettings.SongOptions.IsSkipOn,
+		profileSettings.SongOptions.IsVoiceOn,
+		profileSettings.SongOptions.SelectedToneId,
+		profileSettings.SongOptions.NotesPosition,
+		optionSetting,
+		baid,
+	)
+
+	return err
 }

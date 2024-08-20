@@ -13,6 +13,8 @@ type authPreparedStatements struct {
 	GetBaidFromBaid       *sql.Stmt
 	InsertAuthUser        *sql.Stmt
 	GetUsernameFromBaid   *sql.Stmt
+	GetCustomTitleOn      *sql.Stmt
+	UpdateCustomTitleOn   *sql.Stmt
 }
 
 var db *sql.DB
@@ -28,6 +30,9 @@ func initAuthDB(dataSourceName string) {
 	authStmts.GetBaidFromBaid = prepareQuery(db, "queries/auth/getBaidFromBaid.sql")
 	authStmts.InsertAuthUser = prepareQuery(db, "queries/auth/insertAuthUser.sql")
 	authStmts.GetUsernameFromBaid = prepareQuery(db, "queries/auth/getUsernameFromBaid.sql")
+	authStmts.GetCustomTitleOn = prepareQuery(db, "queries/auth/getCustomTitleOn.sql")
+	authStmts.UpdateCustomTitleOn = prepareQuery(db, "queries/auth/updateCustomTitleOn.sql")
+
 	if err = db.Ping(); err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
@@ -89,4 +94,18 @@ func GetUsernameByBaid(baid uint) (string, bool, error) {
 		return "", false, err
 	}
 	return username, true, nil
+}
+
+func GetCustomTitleOn(baid uint) (bool, error) {
+	var customTitleOn bool
+	err := authStmts.GetCustomTitleOn.QueryRow(baid).Scan(&customTitleOn)
+	if err != nil {
+		return true, err // doesn't matter if return true or false here
+	}
+	return customTitleOn, nil
+}
+
+func UpdateCustomTitleOn(baid uint, customTitleOn bool) error {
+	_, err := authStmts.UpdateCustomTitleOn.Exec(customTitleOn, baid)
+	return err
 }
