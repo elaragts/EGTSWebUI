@@ -13,7 +13,7 @@ if (authStore.isAuthenticated) {
     <div class="flex flex-col items-center justify-center px-6 py-5 mx-auto md:my-16 lg:py-0">
         <div class="flex flex-col items-center space-y-5 mb-6 text-4xl">
             <img class="w-20 h-20 mr-2" src="../assets/taiko.png" alt="logo"/>
-            <h1 class="font-[taiko] text-center">Taiko Public Server</h1>
+            <h1 class="font-[taiko] text-center">Elara Global Taiko Server</h1>
         </div>
         <div class="w-full bg-cl2 rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
             <div class="p-6 space-y-4 md:space-y-6 sm:p-8 ">

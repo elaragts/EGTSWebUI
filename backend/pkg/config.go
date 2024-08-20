@@ -10,6 +10,7 @@ type Config struct {
 	Port          string `json:"port"`
 	TaikoDBPath   string `json:"taikoDBPath"`
 	AuthDBPath    string `json:"authDBPath"`
+	DatatablePath string `json:"datatablePath"`
 	DistPath      string `json:"distPath"`
 	SessionSecret string `json:"sessionSecret"`
 }

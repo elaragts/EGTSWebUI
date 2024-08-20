@@ -15,3 +15,9 @@ type PublicProfile struct {
 	BestScoreRank                [8]int        `json:"bestScoreRank"`
 	BestCrown                    [3]int        `json:"bestCrown"`
 }
+
+type ProfileSettings struct {
+	ProfileOptions ProfileOptions `json:"profileOptions"`
+	CostumeOptions CostumeOptions `json:"costumeOptions"`
+	SongOptions    SongOptions    `json:"songOptions"`
+}

@@ -1,4 +1,5 @@
 import {defineStore} from 'pinia';
+import {useProfileStore} from "@/store/profileStore";
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -10,7 +11,6 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         async initAuth(): Promise<void> {
             if (this.initialized) return; // Prevent re-initialization
-            this.initialized = true; // Mark as initialized
 
             const response = await fetch('/auth/session');
             switch (response.status) {
@@ -18,6 +18,9 @@ export const useAuthStore = defineStore('auth', {
                     const res = await response.json();
                     this.username = res.username;
                     this.isAuthenticated = true;
+                    this.baid = res.baid;
+                    const profileStore = useProfileStore();
+                    await profileStore.initProfile(this.baid); // load up profile data
                     break;
                 case 401:
                     this.isAuthenticated = false;
@@ -25,6 +28,8 @@ export const useAuthStore = defineStore('auth', {
                 default:
                     console.error('Unexpected response status:', response.status);
             }
+
+            this.initialized = true; // Mark as initialized
         },
         async login(formData: any): Promise<[boolean, string]> {
             const response = await fetch('/auth/login', {
@@ -37,9 +42,11 @@ export const useAuthStore = defineStore('auth', {
 
             if (response.ok) {
                 const body = await response.json();
-                this.username = body.Username;
-                this.baid = body.Baid;
+                this.username = body.username;
+                this.baid = body.baid;
                 this.isAuthenticated = true;
+                const profileStore = useProfileStore();
+                await profileStore.initProfile(this.baid);
                 return [true, ''];
             } else {
                 return [false, await response.text()];
@@ -51,6 +58,8 @@ export const useAuthStore = defineStore('auth', {
                 this.isAuthenticated = false;
                 this.username = '';
                 this.baid = 0;
+                const profileStore = useProfileStore();
+                profileStore.initialized = false;
             } else {
                 console.error('Failed to logout:', response.status);
             }

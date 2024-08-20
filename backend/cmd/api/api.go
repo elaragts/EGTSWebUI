@@ -35,9 +35,12 @@ func apiRoutes() chi.Router {
 	r := chi.NewRouter()
 	apiHandler := handlers.ApiHandler{}
 	r.Get("/leaderboard", apiHandler.Leaderboard)
-	r.With(myMiddleware.RequireAuth).Get("/user/{id}", apiHandler.GetUser)
+	r.Get("/datatable", apiHandler.Datatable)
+	r.Get("/user/{id}", apiHandler.GetUser)
 	r.With(myMiddleware.RequireAuth).Get("/user/{id}/profile_options", apiHandler.GetProfileOptions)
-	//	r.With(myMiddleware.RequireAuth).Put("/user/{id}/profile_options", apiHandler.PutProfileOptions)
+	r.With(myMiddleware.RequireAuth).Get("/user/{id}/costume_options", apiHandler.GetCostumeOptions)
+	r.With(myMiddleware.RequireAuth).Get("/user/{id}/song_options", apiHandler.GetSongOptions)
+	r.With(myMiddleware.RequireAuth).Put("/user/{id}", apiHandler.UpdateUser)
 
 	return r
 }

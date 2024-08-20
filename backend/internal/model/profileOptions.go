@@ -8,5 +8,8 @@ type ProfileOptions struct {
 	DisplayAchievement           bool   `json:"displayAchievement"`
 	AchievementDisplayDifficulty uint   `json:"achievementDisplayDifficulty"`
 	DisplayDan                   bool   `json:"displayDan"`
-	DifficultySettingArray       string `json:"difficultySettingArray"`
+	DifficultySettingCourse      uint   `json:"difficultySettingCourse"`
+	DifficultySettingStar        uint   `json:"difficultySettingStar"`
+	DifficultySettingSort        uint   `json:"difficultySettingSort"`
+	CustomTitleOn                bool   `json:"customTitleOn"`
 }
