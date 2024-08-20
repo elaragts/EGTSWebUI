@@ -19,9 +19,9 @@ func Run(port string, distPath string) {
 	r.Mount("/api", apiRoutes())
 	r.Mount("/auth", authRoutes())
 	r.Mount("/updater", updaterRoutes())
-	r.Get("/guide", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "https://rentry.org/TaikoPublic", http.StatusFound)
-	})
+	//r.Get("/guide", func(w http.ResponseWriter, r *http.Request) {
+	//	http.Redirect(w, r, "https://rentry.org/TaikoPublic", http.StatusFound)
+	//})
 	// Serve static files
 	fileServer(r, "/", http.Dir(distPath), distPath)
 
