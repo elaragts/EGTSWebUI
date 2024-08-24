@@ -37,10 +37,17 @@ func apiRoutes() chi.Router {
 	r.Get("/leaderboard", apiHandler.Leaderboard)
 	r.Get("/datatable", apiHandler.Datatable)
 	r.Get("/user/{id}", apiHandler.GetUser)
+
+	// edit-profile endpoints
 	r.With(myMiddleware.RequireAuth).Get("/user/{id}/profile_options", apiHandler.GetProfileOptions)
 	r.With(myMiddleware.RequireAuth).Get("/user/{id}/costume_options", apiHandler.GetCostumeOptions)
 	r.With(myMiddleware.RequireAuth).Get("/user/{id}/song_options", apiHandler.GetSongOptions)
 	r.With(myMiddleware.RequireAuth).Put("/user/{id}", apiHandler.UpdateUser)
+
+	// settings endpoints
+	//r.With(myMiddleware.RequireAuth).Get("/user/{id}/access_codes", apiHandler.GetAccessCodes)
+	//r.With(myMiddleware.RequireAuth).Post("/user/{id}/access_codes", apiHandler.AddAccessCode)
+	//r.With(myMiddleware.RequireAuth).Delete("/user/{id}/access_codes", apiHandler.DeleteAccessCode)
 
 	return r
 }
@@ -52,6 +59,11 @@ func authRoutes() chi.Router {
 	r.Post("/login", authHandler.Login)
 	r.Post("/logout", authHandler.Logout)
 	r.Get("/session", authHandler.Session)
+
+	// settings endpoints
+	r.With(myMiddleware.RequireAuth).Put("/user/{id}/username", authHandler.ChangeUsername)
+	r.With(myMiddleware.RequireAuth).Put("/user/{id}/password", authHandler.ChangePassword)
+
 	return r
 }
 

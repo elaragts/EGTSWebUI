@@ -9,12 +9,15 @@ import (
 )
 
 type authPreparedStatements struct {
-	GetAuthUserByUsername *sql.Stmt
-	GetBaidFromBaid       *sql.Stmt
-	InsertAuthUser        *sql.Stmt
-	GetUsernameFromBaid   *sql.Stmt
-	GetCustomTitleOn      *sql.Stmt
-	UpdateCustomTitleOn   *sql.Stmt
+	GetAuthUserByUsername   *sql.Stmt
+	GetBaidFromBaid         *sql.Stmt
+	InsertAuthUser          *sql.Stmt
+	GetUsernameFromBaid     *sql.Stmt
+	GetPasswordHashFromBaid *sql.Stmt
+	GetCustomTitleOn        *sql.Stmt
+	UpdateCustomTitleOn     *sql.Stmt
+	ChangeUsername          *sql.Stmt
+	ChangePassword          *sql.Stmt
 }
 
 var db *sql.DB
@@ -30,8 +33,11 @@ func initAuthDB(dataSourceName string) {
 	authStmts.GetBaidFromBaid = prepareQuery(db, "queries/auth/getBaidFromBaid.sql")
 	authStmts.InsertAuthUser = prepareQuery(db, "queries/auth/insertAuthUser.sql")
 	authStmts.GetUsernameFromBaid = prepareQuery(db, "queries/auth/getUsernameFromBaid.sql")
+	authStmts.GetPasswordHashFromBaid = prepareQuery(db, "queries/auth/getPasswordHashFromBaid.sql")
 	authStmts.GetCustomTitleOn = prepareQuery(db, "queries/auth/getCustomTitleOn.sql")
 	authStmts.UpdateCustomTitleOn = prepareQuery(db, "queries/auth/updateCustomTitleOn.sql")
+	authStmts.ChangeUsername = prepareQuery(db, "queries/auth/changeUsername.sql")
+	authStmts.ChangePassword = prepareQuery(db, "queries/auth/changePassword.sql")
 
 	if err = db.Ping(); err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
@@ -96,6 +102,18 @@ func GetUsernameByBaid(baid uint) (string, bool, error) {
 	return username, true, nil
 }
 
+func GetPasswordHashByBaid(baid uint) (string, bool, error) {
+	var passwordHash string
+	err := authStmts.GetPasswordHashFromBaid.QueryRow(baid).Scan(&passwordHash)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", false, nil
+		}
+		return "", false, err
+	}
+	return passwordHash, true, nil
+}
+
 func GetCustomTitleOn(baid uint) (bool, error) {
 	var customTitleOn bool
 	err := authStmts.GetCustomTitleOn.QueryRow(baid).Scan(&customTitleOn)
@@ -107,5 +125,15 @@ func GetCustomTitleOn(baid uint) (bool, error) {
 
 func UpdateCustomTitleOn(baid uint, customTitleOn bool) error {
 	_, err := authStmts.UpdateCustomTitleOn.Exec(customTitleOn, baid)
+	return err
+}
+
+func ChangeUsername(baid uint, username string) error {
+	_, err := authStmts.ChangeUsername.Exec(username, baid)
+	return err
+}
+
+func ChangePassword(baid uint, passwordHash string) error {
+	_, err := authStmts.ChangePassword.Exec(passwordHash, baid)
 	return err
 }
