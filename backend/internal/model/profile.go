@@ -21,3 +21,7 @@ type ProfileSettings struct {
 	CostumeOptions CostumeOptions `json:"costumeOptions"`
 	SongOptions    SongOptions    `json:"songOptions"`
 }
+
+type AccessCode struct {
+	AccessCode string `json:"accessCode"`
+}

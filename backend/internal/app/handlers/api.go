@@ -238,3 +238,113 @@ func (a ApiHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 }
+
+func (a ApiHandler) GetAccessCodes(w http.ResponseWriter, r *http.Request) {
+	id, err := verifyClientBaid(w, r)
+	if err != nil {
+		return
+	}
+
+	accessCodes, err := database.GetAccessCodes(id)
+	if err != nil {
+		http.Error(w, "Error getting access codes", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	// IMPORTANT - sending access codes as a SEPARATE array, NOT an object that contains an array
+	json.NewEncoder(w).Encode(accessCodes)
+}
+
+func (a ApiHandler) AddAccessCode(w http.ResponseWriter, r *http.Request) {
+	id, err := verifyClientBaid(w, r)
+	if err != nil {
+		return
+	}
+
+	var newAccessCode model.AccessCode
+	err = json.NewDecoder(r.Body).Decode(&newAccessCode)
+	if err != nil {
+		http.Error(w, "Invalid Request Body", http.StatusBadRequest)
+		log.Println(err)
+		return
+	}
+
+	// length of new access code between 1-100
+	if len(newAccessCode.AccessCode) < 1 || len(newAccessCode.AccessCode) > 100 {
+		http.Error(w, "New access code must be between 8 and 100 characters", http.StatusBadRequest)
+		return
+	}
+
+	// Checking that new access code is unique/not in use
+	_, found, err := database.GetBaidFromAccessCode(newAccessCode.AccessCode)
+	if err != nil {
+		http.Error(w, "Error checking access code validity", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	if found {
+		http.Error(w, "Invalid Access Code", http.StatusBadRequest)
+		return
+	}
+
+	// adding new access code to db
+	err = database.AddAccessCode(id, newAccessCode.AccessCode)
+	if err != nil {
+		http.Error(w, "Error adding access code", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (a ApiHandler) DeleteAccessCode(w http.ResponseWriter, r *http.Request) {
+	id, err := verifyClientBaid(w, r)
+	if err != nil {
+		return
+	}
+
+	var deleteAccessCode model.AccessCode
+	err = json.NewDecoder(r.Body).Decode(&deleteAccessCode)
+	if err != nil {
+		http.Error(w, "Invalid Request Body", http.StatusBadRequest)
+		log.Println(err)
+		return
+	}
+
+	// Checking that the access code being deleted actually belongs to the current user
+	ownerId, found, err := database.GetBaidFromAccessCode(deleteAccessCode.AccessCode)
+	if err != nil {
+		http.Error(w, "Error checking access code validity", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	if !found || id != ownerId {
+		http.Error(w, "Invalid Access Code", http.StatusBadRequest)
+		return
+	}
+
+	// User MUST have at least 1 access code
+	currentAccessCodes, err := database.GetAccessCodes(id)
+	if err != nil {
+		http.Error(w, "Error getting access code count", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	if len(currentAccessCodes) == 1 {
+		http.Error(w, "You must have at least one access code", http.StatusBadRequest)
+		return
+	}
+
+	// deleting access code from db
+	err = database.DeleteAccessCode(id, deleteAccessCode.AccessCode) // sending baid just in case
+	if err != nil {
+		http.Error(w, "Error deleting access code", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}

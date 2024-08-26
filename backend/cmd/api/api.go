@@ -45,9 +45,9 @@ func apiRoutes() chi.Router {
 	r.With(myMiddleware.RequireAuth).Put("/user/{id}", apiHandler.UpdateUser)
 
 	// settings endpoints
-	//r.With(myMiddleware.RequireAuth).Get("/user/{id}/access_codes", apiHandler.GetAccessCodes)
-	//r.With(myMiddleware.RequireAuth).Post("/user/{id}/access_codes", apiHandler.AddAccessCode)
-	//r.With(myMiddleware.RequireAuth).Delete("/user/{id}/access_codes", apiHandler.DeleteAccessCode)
+	r.With(myMiddleware.RequireAuth).Get("/user/{id}/access_codes", apiHandler.GetAccessCodes)
+	r.With(myMiddleware.RequireAuth).Post("/user/{id}/access_codes", apiHandler.AddAccessCode)
+	r.With(myMiddleware.RequireAuth).Delete("/user/{id}/access_codes", apiHandler.DeleteAccessCode)
 
 	return r
 }

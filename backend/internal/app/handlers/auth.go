@@ -206,6 +206,7 @@ func (a AuthHandler) ChangeUsername(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&UpdateAuthUser)
 	if err != nil {
 		http.Error(w, "Invalid Request Body", http.StatusBadRequest)
+		log.Println(err)
 		return
 	}
 
@@ -248,6 +249,7 @@ func (a AuthHandler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&UpdateAuthUser)
 	if err != nil {
 		http.Error(w, "Invalid Request Body", http.StatusBadRequest)
+		log.Println(err)
 		return
 	}
 
@@ -255,12 +257,14 @@ func (a AuthHandler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	passwordHash, found, err := database.GetPasswordHashByBaid(id)
 	if err != nil || !found {
 		http.Error(w, "Error checking password", http.StatusInternalServerError)
+		log.Println(err)
 		return
 	}
 	// actual password check
 	err = bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(UpdateAuthUser.CurrentPassword))
 	if err != nil {
 		http.Error(w, "Password is incorrect", http.StatusUnauthorized)
+		log.Println(err)
 		return
 	}
 
