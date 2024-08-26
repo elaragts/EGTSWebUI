@@ -63,6 +63,6 @@ export const useAuthStore = defineStore('auth', {
             } else {
                 console.error('Failed to logout:', response.status);
             }
-        },
-    },
+        }
+    }
 });

@@ -3,7 +3,6 @@ import {useDatatableStore} from "@/store/datatableStore";
 import {useProfileStore} from "@/store/profileStore";
 import {type Ref, ref, watch} from "vue";
 import type { Item } from '@/types';
-import '@mdi/font/css/materialdesignicons.css'
 
 const datatableStore = useDatatableStore();
 const titles: Ref<Item[]> = ref(datatableStore.titleList);

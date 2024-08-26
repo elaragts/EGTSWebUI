@@ -18,6 +18,9 @@ type taikoPreparedStatements struct {
 	GetCostumeOptions     *sql.Stmt
 	GetSongOptions        *sql.Stmt
 	UpdateUser            *sql.Stmt
+	GetAccessCodes        *sql.Stmt
+	AddAccessCode         *sql.Stmt
+	DeleteAccessCode      *sql.Stmt
 }
 
 var taikodb *sql.DB
@@ -38,6 +41,9 @@ func initTaikoDB(dataSourceName string) {
 	taikoStmts.GetCostumeOptions = prepareQuery(taikodb, "queries/taiko/getCostumeOptions.sql")
 	taikoStmts.GetSongOptions = prepareQuery(taikodb, "queries/taiko/getSongOptions.sql")
 	taikoStmts.UpdateUser = prepareQuery(taikodb, "queries/taiko/updateUser.sql")
+	taikoStmts.GetAccessCodes = prepareQuery(taikodb, "queries/taiko/getAccessCodes.sql")
+	taikoStmts.AddAccessCode = prepareQuery(taikodb, "queries/taiko/addAccessCode.sql")
+	taikoStmts.DeleteAccessCode = prepareQuery(taikodb, "queries/taiko/deleteAccessCode.sql")
 
 	if err = taikodb.Ping(); err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
@@ -237,6 +243,52 @@ func UpdateUser(baid uint, profileSettings model.ProfileSettings) error {
 		profileSettings.SongOptions.SelectedToneId,
 		profileSettings.SongOptions.NotesPosition,
 		optionSetting,
+		baid,
+	)
+
+	return err
+}
+
+func GetAccessCodes(baid uint) ([]string, error) {
+
+	var accessCodes []string
+
+	rows, err := taikoStmts.GetAccessCodes.Query(baid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var accessCode string
+		if err := rows.Scan(&accessCode); err != nil {
+			return nil, err
+		}
+		accessCodes = append(accessCodes, accessCode)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return accessCodes, nil
+}
+
+func AddAccessCode(baid uint, accessCode string) error {
+
+	_, err := taikoStmts.AddAccessCode.Exec(
+		accessCode,
+		baid,
+	)
+
+	return err
+}
+
+func DeleteAccessCode(baid uint, accessCode string) error {
+
+	// sending with baid just in case
+	_, err := taikoStmts.DeleteAccessCode.Exec(
+		accessCode,
 		baid,
 	)
 

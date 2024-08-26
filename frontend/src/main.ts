@@ -8,7 +8,8 @@ import 'vue-toastification/dist/index.css';
 
 // imports for external vue components
 import { createVuetify } from 'vuetify';
-import { VSlider, VDataTable, VTextField, VCard, VDialog, VBtn, VSpacer } from 'vuetify/components';
+import '@mdi/font/css/materialdesignicons.css'
+import { VSlider, VDataTable, VTextField, VCard, VDialog, VBtn, VSpacer, VIcon } from 'vuetify/components';
 
 const vuetify = createVuetify({
     components: {
@@ -18,7 +19,8 @@ const vuetify = createVuetify({
         VCard,
         VDialog,
         VBtn,
-        VSpacer
+        VSpacer,
+        VIcon
     }
 });
 

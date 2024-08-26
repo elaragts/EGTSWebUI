@@ -8,7 +8,7 @@ const authStore = useAuthStore();
 const playerName = ref('Player');
 
 // Watch for changes in authentication state
-watch(() => authStore.isAuthenticated, (newVal) => {
+watch(() => authStore.username, (newVal) => {
     if (newVal) {
         playerName.value = `${authStore.username}'s`;
     }
