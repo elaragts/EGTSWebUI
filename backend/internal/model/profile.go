@@ -29,4 +29,3 @@ type AccessCode struct {
 type FavouritedSong struct {
 	SongId uint `json:"songId"`
 }
-
