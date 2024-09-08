@@ -44,7 +44,7 @@
         <strong class="underline">For support with EGTS, or questions and suggestions, join the EGTS discord server:</strong>
         <br/>
         <strong>
-          <a href="https://discord.gg/egts" class="text-cl6 hover:underline">https://discord.gg/egts</a>
+          <a href="https://discord.egts.ca" class="text-cl6 hover:underline">https://discord.egts.ca</a>
         </strong>
       </p>
       <p class="mb-4">
@@ -85,7 +85,7 @@
       <p class="mb-4">
         EGTS Discord:
         <br/>
-        <a href="https://discord.gg/egts" class="text-cl6 hover:underline">https://discord.gg/egts</a>
+        <a href="https://discord.egts.ca" class="text-cl6 hover:underline">https://discord.egts.ca</a>
       </p>
       <p>
         Taiko no Tatsujin Modding Discord Server:
