@@ -25,3 +25,7 @@ type ProfileSettings struct {
 type AccessCode struct {
 	AccessCode string `json:"accessCode"`
 }
+
+type FavouritedSong struct {
+	SongId uint `json:"songId"`
+}

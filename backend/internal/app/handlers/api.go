@@ -348,3 +348,119 @@ func (a ApiHandler) DeleteAccessCode(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 }
+
+func (a ApiHandler) GetFavouritedSongs(w http.ResponseWriter, r *http.Request) {
+	id, err := verifyClientBaid(w, r)
+	if err != nil {
+		return
+	}
+
+	favouritedSongs, err := database.GetFavouritedSongs(id)
+	if err != nil {
+		http.Error(w, "Error getting favourited songs", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	// IMPORTANT - sending favourited songs as a SEPARATE array, NOT an object that contains an array
+	json.NewEncoder(w).Encode(favouritedSongs)
+}
+
+func (a ApiHandler) AddFavouritedSong(w http.ResponseWriter, r *http.Request) {
+	id, err := verifyClientBaid(w, r)
+	if err != nil {
+		return
+	}
+
+	var newFavouritedSong model.FavouritedSong
+	err = json.NewDecoder(r.Body).Decode(&newFavouritedSong)
+	if err != nil {
+		http.Error(w, "Invalid Request Body", http.StatusBadRequest)
+		log.Println(err)
+		return
+	}
+
+	// check that song ID links to a valid song
+	_, exists := pkg.Datatable.Song[newFavouritedSong.SongId]
+	if !exists {
+		http.Error(w, "Invalid Song ID", http.StatusBadRequest)
+		return
+	}
+
+	// check that user doesn't already have the song favourited
+	favouritedSongs, err := database.GetFavouritedSongs(id)
+	if err != nil {
+		http.Error(w, "Error checking favourited songs", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	for _, songId := range favouritedSongs {
+		if newFavouritedSong.SongId != songId {
+			continue
+		}
+		http.Error(w, "Song already favourited", http.StatusBadRequest)
+		return
+	}
+
+	// adding new song to db
+	err = database.AddFavouritedSong(id, newFavouritedSong.SongId)
+	if err != nil {
+		http.Error(w, "Error adding favourited song", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (a ApiHandler) DeleteFavouritedSong(w http.ResponseWriter, r *http.Request) {
+	id, err := verifyClientBaid(w, r)
+	if err != nil {
+		return
+	}
+
+	var deleteFavouritedSong model.FavouritedSong
+	err = json.NewDecoder(r.Body).Decode(&deleteFavouritedSong)
+	if err != nil {
+		http.Error(w, "Invalid Request Body", http.StatusBadRequest)
+		log.Println(err)
+		return
+	}
+
+	// check that song ID links to a valid song
+	_, exists := pkg.Datatable.Song[deleteFavouritedSong.SongId]
+	if !exists {
+		http.Error(w, "Invalid Song ID", http.StatusBadRequest)
+		return
+	}
+
+	// check that user actually has the song favourited
+	favouritedSongs, err := database.GetFavouritedSongs(id)
+	if err != nil {
+		http.Error(w, "Error checking favourited songs", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	songFavourited := false
+	for _, songId := range favouritedSongs {
+		if deleteFavouritedSong.SongId == songId { // song found in fav song list
+			songFavourited = true
+			break
+		}
+	}
+	if !songFavourited { // song wasn't found in fav song list
+		http.Error(w, "Invalid Song ID: Song already not favourited", http.StatusBadRequest)
+		return
+	}
+
+	// adding new song to db
+	err = database.DeleteFavouritedSong(id, deleteFavouritedSong.SongId)
+	if err != nil {
+		http.Error(w, "Error deleting favourited song", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
