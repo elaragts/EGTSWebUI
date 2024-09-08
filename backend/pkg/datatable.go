@@ -13,13 +13,19 @@ type dataPairs struct {
 	JapaneseName string `json:"japaneseName"`
 }
 
+type songPairs struct {
+	EnglishName  string `json:"englishName"`
+	JapaneseName string `json:"japaneseName"`
+}
+
 type Data struct {
-	Head     []dataPairs `json:"head"`
-	Body     []dataPairs `json:"body"`
-	Face     []dataPairs `json:"face"`
-	Kigurumi []dataPairs `json:"kigurumi"`
-	Puchi    []dataPairs `json:"puchi"`
-	Title    []dataPairs `json:"title"`
+	Head     []dataPairs        `json:"head"`
+	Body     []dataPairs        `json:"body"`
+	Face     []dataPairs        `json:"face"`
+	Kigurumi []dataPairs        `json:"kigurumi"`
+	Puchi    []dataPairs        `json:"puchi"`
+	Title    []dataPairs        `json:"title"`
+	Song     map[uint]songPairs `json:"song"`
 }
 
 type wordlistItem struct {
@@ -59,6 +65,15 @@ type shougouType struct {
 	Items []shougouItem `json:"items"`
 }
 
+type songItem struct {
+	SongId   string `json:"id"`
+	UniqueID uint   `json:"uniqueId"`
+}
+
+type songType struct {
+	Items []songItem `json:"items"`
+}
+
 var Datatable Data
 
 func InitDatatable(datatablePath string) {
@@ -77,9 +92,15 @@ func InitDatatable(datatablePath string) {
 		fmt.Println("Error opening shougou file:", err)
 		return
 	}
+	songsFile, err := os.Open(datatablePath + "/musicinfo.json")
+	if err != nil {
+		fmt.Println("Error opening music file:", err)
+		return
+	}
 	defer costumesFile.Close()
 	defer wordlistFile.Close()
 	defer shougouFile.Close()
+	defer songsFile.Close()
 
 	var wordlist wordlistType
 
@@ -103,8 +124,15 @@ func InitDatatable(datatablePath string) {
 
 	wordlistMap := make(map[string]stringPair)
 	for _, item := range wordlist.Items {
-		if !strings.HasPrefix(item.Key, "costume") && !strings.HasPrefix(item.Key, "syougou") {
-			continue // skip item, we dont need it
+		if !strings.HasPrefix(item.Key, "costume") &&
+			!strings.HasPrefix(item.Key, "syougou") &&
+			(!strings.HasPrefix(item.Key, "song") ||
+				strings.HasPrefix(item.Key, "song_sub") ||
+				strings.HasPrefix(item.Key, "song_detail")) {
+
+			// filtering out anything that isn't a valid costume, syougou, or song
+			// also filters out song_detail and song_sub as they aren't needed
+			continue
 		}
 
 		var pair stringPair
@@ -221,4 +249,37 @@ func InitDatatable(datatablePath string) {
 		Datatable.Title = append(Datatable.Title, newTitleItem)
 	}
 
+	var songs songType
+
+	decoder = json.NewDecoder(songsFile)
+	err = decoder.Decode(&songs)
+	if err != nil {
+		fmt.Println("Error decoding songs file:", err)
+		return
+	}
+
+	// need to loop through music file
+	// take each id, which is a string (songId) instead of a number (uniqueId) like the last two files,
+	// and look it up in the wordlistMap, grab the name and send the data to the
+	// song array in the Datatable variable,
+	// each data point should be sent as a dataPairs type
+
+	Datatable.Song = make(map[uint]songPairs)
+
+	for _, item := range songs.Items {
+		if item.UniqueID == 0 { // not including tmap4
+			continue
+		}
+
+		var newSongItem songPairs
+
+		// key in the wordlist map is in the format song_songID
+		var key string
+		key = fmt.Sprintf("%s%s", "song_", item.SongId)
+
+		newSongItem.EnglishName = wordlistMap[key].EnglishUsText
+		newSongItem.JapaneseName = wordlistMap[key].JapaneseText
+
+		Datatable.Song[item.UniqueID] = newSongItem
+	}
 }

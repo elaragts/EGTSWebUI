@@ -38,7 +38,8 @@ func apiRoutes() chi.Router {
 	r.Get("/datatable", apiHandler.Datatable)
 	r.Get("/user/{id}", apiHandler.GetUser)
 
-	// edit-profile endpoints
+
+	// edit-options endpoints
 	r.With(myMiddleware.RequireAuth).Get("/user/{id}/profile_options", apiHandler.GetProfileOptions)
 	r.With(myMiddleware.RequireAuth).Get("/user/{id}/costume_options", apiHandler.GetCostumeOptions)
 	r.With(myMiddleware.RequireAuth).Get("/user/{id}/song_options", apiHandler.GetSongOptions)
@@ -48,6 +49,11 @@ func apiRoutes() chi.Router {
 	r.With(myMiddleware.RequireAuth).Get("/user/{id}/access_codes", apiHandler.GetAccessCodes)
 	r.With(myMiddleware.RequireAuth).Post("/user/{id}/access_codes", apiHandler.AddAccessCode)
 	r.With(myMiddleware.RequireAuth).Delete("/user/{id}/access_codes", apiHandler.DeleteAccessCode)
+
+	// fav-songs endpoints
+	r.With(myMiddleware.RequireAuth).Get("/user/{id}/songs", apiHandler.GetFavouritedSongs)
+	r.With(myMiddleware.RequireAuth).Put("/user/{id}/songs", apiHandler.AddFavouritedSong)
+	r.With(myMiddleware.RequireAuth).Delete("/user/{id}/songs", apiHandler.DeleteFavouritedSong)
 
 	return r
 }

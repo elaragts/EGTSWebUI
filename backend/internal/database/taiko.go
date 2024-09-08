@@ -8,6 +8,8 @@ import (
 	"github.com/keitannunes/KeifunsTaikoWebUI/backend/internal/model"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
+	"strconv"
+	"strings"
 )
 
 type taikoPreparedStatements struct {
@@ -21,6 +23,9 @@ type taikoPreparedStatements struct {
 	GetAccessCodes        *sql.Stmt
 	AddAccessCode         *sql.Stmt
 	DeleteAccessCode      *sql.Stmt
+	GetFavouritedSongs    *sql.Stmt
+	UpdateFavouritedSongs *sql.Stmt
+
 }
 
 var taikodb *sql.DB
@@ -44,6 +49,9 @@ func initTaikoDB(dataSourceName string) {
 	taikoStmts.GetAccessCodes = prepareQuery(taikodb, "queries/taiko/getAccessCodes.sql")
 	taikoStmts.AddAccessCode = prepareQuery(taikodb, "queries/taiko/addAccessCode.sql")
 	taikoStmts.DeleteAccessCode = prepareQuery(taikodb, "queries/taiko/deleteAccessCode.sql")
+	taikoStmts.GetFavouritedSongs = prepareQuery(taikodb, "queries/taiko/getFavouritedSongs.sql")
+	taikoStmts.UpdateFavouritedSongs = prepareQuery(taikodb, "queries/taiko/updateFavouritedSongs.sql")
+
 
 	if err = taikodb.Ping(); err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
@@ -289,6 +297,110 @@ func DeleteAccessCode(baid uint, accessCode string) error {
 	// sending with baid just in case
 	_, err := taikoStmts.DeleteAccessCode.Exec(
 		accessCode,
+		baid,
+	)
+
+	return err
+}
+
+func GetFavouritedSongs(baid uint) ([]uint, error) {
+
+	// cant grab the whole array as an []int so take it as a string
+	var favouritedSongsStr string
+
+	err := taikoStmts.GetFavouritedSongs.QueryRow(baid).Scan(&favouritedSongsStr)
+	if err != nil {
+		return nil, err
+	}
+
+	// if array is empty
+	if favouritedSongsStr == "[]" {
+		return []uint{}, nil
+	}
+
+	// trimming brackets
+	favouritedSongsStr = strings.Trim(favouritedSongsStr, "[]")
+
+	// then convert the string into individual integers and add it to the return array
+	favouritedSongs := []uint{} // leave this how it is, don't change to other declaration
+	songIDs := strings.Split(favouritedSongsStr, ",")
+	for _, idAsStr := range songIDs {
+		id, err := strconv.ParseUint(idAsStr, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		if id != 0 { // not including tmap4
+			favouritedSongs = append(favouritedSongs, uint(id))
+		}
+	}
+
+	return favouritedSongs, nil
+}
+
+func AddFavouritedSong(baid uint, songId uint) error {
+
+	// need to add the new fav song into the string version of the array in the db
+
+	// grab the whole array as a string
+	var favouritedSongsStr string
+
+	err := taikoStmts.GetFavouritedSongs.QueryRow(baid).Scan(&favouritedSongsStr)
+	if err != nil {
+		return err
+	}
+
+	// if array is empty, we can just add the new song in
+	if favouritedSongsStr == "[]" {
+		favouritedSongsStr = strings.Replace(favouritedSongsStr, "]", strconv.FormatUint(uint64(songId), 10)+"]", 1)
+	} else { // if it's not empty, we have to put a comma as well
+		favouritedSongsStr = strings.Replace(favouritedSongsStr, "]", ","+strconv.FormatUint(uint64(songId), 10)+"]", 1)
+	}
+
+	_, err = taikoStmts.UpdateFavouritedSongs.Exec(
+		favouritedSongsStr,
+		baid,
+	)
+
+	return err
+}
+
+func DeleteFavouritedSong(baid uint, songId uint) error {
+
+	// need to remove the song from the string version of the array in the db
+
+	// cant grab the whole array as a string
+	var favouritedSongsStr string
+
+	err := taikoStmts.GetFavouritedSongs.QueryRow(baid).Scan(&favouritedSongsStr)
+	if err != nil {
+		return err
+	}
+
+	// converting the string into an actual array for easier deletion of fav song
+	// trimming brackets
+	favouritedSongsStr = strings.Trim(favouritedSongsStr, "[]")
+	// then convert the string into individual integers and add it to the array
+	favouritedSongs := []uint{} // leave this how it is, don't change to other declaration
+	songIDs := strings.Split(favouritedSongsStr, ",")
+	for _, idAsStr := range songIDs {
+		id, err := strconv.ParseUint(idAsStr, 10, 64)
+		if err != nil {
+			return err
+		}
+		if id != 0 && id != uint64(songId) { // remove the song from the array
+			favouritedSongs = append(favouritedSongs, uint(id))
+		}
+	}
+
+	// convert the array back into a string to put into the db
+	arr, err := json.Marshal(favouritedSongs)
+	if err != nil {
+		return err
+	}
+	favouritedSongsStr = string(arr)
+
+	_, err = taikoStmts.UpdateFavouritedSongs.Exec(
+		favouritedSongsStr,
 		baid,
 	)
 

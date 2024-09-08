@@ -10,6 +10,7 @@ export const useDatatableStore = defineStore('datatable', {
         kigurumiList: [] as Item[],
         puchiList: [] as Item[],
         titleList: [] as Item[],
+        songMap: {}
     }),
     actions: {
         async initDatatable(): Promise<void> {
@@ -25,6 +26,7 @@ export const useDatatableStore = defineStore('datatable', {
                 this.kigurumiList = res.kigurumi;
                 this.puchiList = res.puchi;
                 this.titleList = res.title;
+                this.songMap = res.song;
             } else {
                 console.error('Unexpected response status:', response.status);
             }
