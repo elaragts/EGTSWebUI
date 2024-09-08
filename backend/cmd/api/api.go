@@ -38,7 +38,6 @@ func apiRoutes() chi.Router {
 	r.Get("/datatable", apiHandler.Datatable)
 	r.Get("/user/{id}", apiHandler.GetUser)
 
-
 	// edit-options endpoints
 	r.With(myMiddleware.RequireAuth).Get("/user/{id}/profile_options", apiHandler.GetProfileOptions)
 	r.With(myMiddleware.RequireAuth).Get("/user/{id}/costume_options", apiHandler.GetCostumeOptions)
