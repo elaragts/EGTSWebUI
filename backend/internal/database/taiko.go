@@ -25,6 +25,7 @@ type taikoPreparedStatements struct {
 	DeleteAccessCode      *sql.Stmt
 	GetFavouritedSongs    *sql.Stmt
 	UpdateFavouritedSongs *sql.Stmt
+
 }
 
 var taikodb *sql.DB
@@ -50,6 +51,7 @@ func initTaikoDB(dataSourceName string) {
 	taikoStmts.DeleteAccessCode = prepareQuery(taikodb, "queries/taiko/deleteAccessCode.sql")
 	taikoStmts.GetFavouritedSongs = prepareQuery(taikodb, "queries/taiko/getFavouritedSongs.sql")
 	taikoStmts.UpdateFavouritedSongs = prepareQuery(taikodb, "queries/taiko/updateFavouritedSongs.sql")
+
 
 	if err = taikodb.Ping(); err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
