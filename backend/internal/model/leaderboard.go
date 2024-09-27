@@ -6,3 +6,9 @@ type LeaderboardRecord struct {
 	BestCrown uint
 	BestRank  uint
 }
+
+type Stats struct {
+	TotalUsers     uint `json:"totalUsers"`
+	ActiveUsers    uint `json:"activeUsers"`
+	TotalPlayCount uint `json:"totalPlayCount"`
+}

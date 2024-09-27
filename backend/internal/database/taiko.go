@@ -15,6 +15,7 @@ import (
 type taikoPreparedStatements struct {
 	Leaderboard           *sql.Stmt
 	GetBaidFromAccessCode *sql.Stmt
+	GetStats              *sql.Stmt
 	GetPublicProfile      *sql.Stmt
 	GetProfileOptions     *sql.Stmt
 	GetCostumeOptions     *sql.Stmt
@@ -40,6 +41,7 @@ func initTaikoDB(dataSourceName string) {
 	}
 	taikoStmts.Leaderboard = prepareQuery(taikodb, "queries/taiko/leaderboard.sql")
 	taikoStmts.GetBaidFromAccessCode = prepareQuery(taikodb, "queries/taiko/getBaidFromAccessCode.sql")
+	taikoStmts.GetStats = prepareQuery(taikodb, "queries/taiko/getStats.sql")
 	taikoStmts.GetPublicProfile = prepareQuery(taikodb, "queries/taiko/getPublicProfile.sql")
 	taikoStmts.GetProfileOptions = prepareQuery(taikodb, "queries/taiko/getProfileOptions.sql")
 	taikoStmts.GetCostumeOptions = prepareQuery(taikodb, "queries/taiko/getCostumeOptions.sql")
@@ -96,6 +98,22 @@ func GetBaidFromAccessCode(accessCode string) (uint, bool, error) {
 		return 0, false, err
 	}
 	return baid, true, nil
+}
+
+func GetStats() (model.Stats, error) {
+	var stats model.Stats
+
+	err := taikoStmts.GetStats.QueryRow().Scan(
+		&stats.TotalUsers,
+		&stats.ActiveUsers,
+		&stats.TotalPlayCount,
+	)
+
+	if err != nil {
+		return model.Stats{}, err
+	}
+
+	return stats, nil
 }
 
 func GetPublicProfile(baid uint) (model.PublicProfile, error) {
