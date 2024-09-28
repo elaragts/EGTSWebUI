@@ -21,7 +21,8 @@ EGTSWebUI serves as a Web UI for Nijiiro JPN36 designed specifically for managin
 ## Tech Stack
 
 ### **Front-End**
-   - **Vue**: A JavaScript framework used for building dynamic, reusable components.
+   - **Vue**: A JavaScript framework used for building dynamic, reusable components and user interfaces.
+   - **TypeScript**: A strongly typed superset of JavaScript that enhances code quality and developer productivity by adding static typing.
    - **Tailwind CSS**: Utility-first CSS framework for fast and smooth design.
 
 ### **Back-End**
