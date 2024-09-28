@@ -2,7 +2,7 @@
 
 ## Overview
 
-EGTSWebUI serves as a Web UI for Nijiiro JPN36 designed specifically for managing **user customization features** and **game access codes authentication**. It handles user data, game sessions, and various customization settings for the desktop version of the game, allowing users to personalize their experience while ensuring secure login and data management.
+EGTSWebUI serves as a Web UI for Nijiiro JPN36 designed specifically for managing **user customization features** and **access code authentication**. It handles user data, game sessions, and various customization settings for the desktop version of the game, allowing users to personalize their experience while ensuring secure login and data management.
 
 ## Features
 
