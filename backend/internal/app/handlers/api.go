@@ -58,6 +58,19 @@ func (a ApiHandler) Datatable(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(pkg.Datatable)
 }
 
+func (a ApiHandler) Stats(w http.ResponseWriter, r *http.Request) {
+
+	stats, err := database.GetStats()
+	if err != nil {
+		http.Error(w, "Error getting stats", http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(stats)
+}
+
 func (a ApiHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	id, err := verifyClientBaid(w, r)
 	if err != nil {
