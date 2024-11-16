@@ -34,8 +34,9 @@ const difficultySortOptions = ["None", "Set up each time", "Default", "Not Clear
 <template>
     <div class="bg-cl5 rounded-xl m-1 h-full p-8 flex flex-col">
       <h1 class="text-4xl font-bold mb-5">Profile Options</h1>
-      <form class="text-xl flex flex-col mx-2 space-y-2" @submit.prevent="profileStore.uploadProfile()">
-          <div class="flex flex-col border-b border-cl6 px-2 mb-4 w-full md:w-1/2">
+      <form class="text-xl flex flex-row mx-2 h-full" @submit.prevent="profileStore.uploadProfile()">
+        <div class="flex flex-col w-1/2 justify-between">
+          <div class="flex flex-col border-b border-cl6 px-2 mb-3 w-full">
               <label for="name" class="text-sm mb-1">Name:</label>
               <input
                   class="appearance-none bg-transparent border-none text-gray-700 focus:outline-none w-full h-10"
@@ -50,8 +51,8 @@ const difficultySortOptions = ["None", "Set up each time", "Default", "Not Clear
               >
           </div>
 
-          <div class="flex flex-row gap-4 mb-4 w-full md:w-1/2">
-            <div class="flex flex-col border-b border-cl6 px-2 w-full md:w-3/4">
+          <div class="flex flex-row gap-4 mb-3 w-full">
+            <div class="flex flex-col border-b border-cl6 px-2 md:w-3/4">
               <label for="title" class="text-sm mb-1">Title:</label>
               <input
                 v-if="profileStore.profileOptions.customTitleOn"
@@ -149,7 +150,7 @@ const difficultySortOptions = ["None", "Set up each time", "Default", "Not Clear
           </div>
 
           <div class="mt-2 flex space-x-5">
-              <div class="flex flex-col border-b border-cl6 px-2 w-full md:w-1/4">
+              <div class="flex flex-col border-b border-cl6 px-2 md:w-1/2">
                   <label for="language" class="text-sm mb-1 mt-2">Language</label>
                   <select id="language"
                           v-model="profileStore.profileOptions.language"
@@ -159,7 +160,7 @@ const difficultySortOptions = ["None", "Set up each time", "Default", "Not Clear
                     </option>
                   </select>
               </div>
-              <div class="flex flex-col border-b border-cl6 px-2 w-full md:w-1/4">
+              <div class="flex flex-col border-b border-cl6 px-2 w-full md:w-1/2">
                   <label for="titlePlate" class="text-sm mb-1 mt-2">Title Plate</label>
                   <select id="titlePlate"
                           v-model="profileStore.profileOptions.titlePlateId"
@@ -171,7 +172,7 @@ const difficultySortOptions = ["None", "Set up each time", "Default", "Not Clear
               </div>
           </div>
           <div class="mt-6 flex flex-row space-x-5">
-            <div class="flex flex-col border-b border-cl6 px-2 w-full md:w-1/4">
+            <div class="flex flex-col border-b border-cl6 px-2 w-full md:w-1/2">
               <label for="achievementDifficulty" class="text-sm mb-1 mt-6">Achievement Panel Difficulty</label>
               <select id="achievementDifficulty"
                       v-model="profileStore.profileOptions.achievementDisplayDifficulty"
@@ -181,7 +182,7 @@ const difficultySortOptions = ["None", "Set up each time", "Default", "Not Clear
                 </option>
               </select>
             </div>
-            <div class="flex flex-col px-2 w-full md:w-1/4 gap-2.5 justify-end pb-1">
+            <div class="flex flex-col px-2 w-full md:w-1/2 gap-2.5 justify-end pb-1">
               <label class="inline-flex items-center cursor-pointer">
                 <input type="checkbox" value="true" class="sr-only peer" v-model="profileStore.profileOptions.displayAchievement">
                 <div
@@ -198,9 +199,9 @@ const difficultySortOptions = ["None", "Set up each time", "Default", "Not Clear
               </label>
             </div>
           </div>
-          <h3 class="font-bold">Difficulty Settings</h3>
-          <div class="mt-6 flex space-x-2">
-            <div class="flex flex-col border-b border-cl6 px-2 w-full md:w-2/12">
+          <h3 class="font-bold mt-1">Difficulty Settings</h3>
+          <div class="mt-1 flex space-x-2">
+            <div class="flex flex-col border-b border-cl6 px-2 md:w-1/3">
               <label for="courseDifficulty" class="text-sm my-1">Course</label>
               <select id="courseDifficulty"
                       v-model="profileStore.profileOptions.difficultySettingCourse"
@@ -210,7 +211,7 @@ const difficultySortOptions = ["None", "Set up each time", "Default", "Not Clear
                 </option>
               </select>
             </div>
-            <div class="flex flex-col border-b border-cl6 px-0 w-full md:w-2/12">
+            <div class="flex flex-col border-b border-cl6 px-0 md:w-1/3">
               <label for="starDifficulty" class="text-sm my-1">Star</label>
               <select id="starDifficulty"
                       v-model="profileStore.profileOptions.difficultySettingStar"
@@ -220,7 +221,7 @@ const difficultySortOptions = ["None", "Set up each time", "Default", "Not Clear
                 </option>
               </select>
             </div>
-            <div class="flex flex-col border-b border-cl6 pt-0 px-2 w-full md:w-2/12">
+            <div class="flex flex-col border-b border-cl6 pt-0 px-2 md:w-1/3">
               <label for="sortDifficulty" class="text-sm my-1">Sort</label>
               <select id="sortDifficulty"
                       v-model="profileStore.profileOptions.difficultySettingSort"
@@ -231,6 +232,15 @@ const difficultySortOptions = ["None", "Set up each time", "Default", "Not Clear
               </select>
             </div>
           </div>
+        </div>
+        <div class="flex flex-col w-1/2 h-full justify-center">
+          <button
+              class="w-1/2 self-center p-2 text-base font-bold border-cl6 bg-cl6 text-cl5 rounded-lg border-2 shadow hover:bg-opacity-80 hover:transition-all"
+              type="submit"
+          >
+            Save
+          </button>
+        </div>
       </form>
     </div>
 

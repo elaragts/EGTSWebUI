@@ -33,6 +33,23 @@ const fetchStats = async () => {
 }
 fetchStats()
 
+const memberCount = ref(0)
+const fetchMemberCount = async () => {
+  try {
+    const response = await fetch(`https://discord.com/api/v9/invites/bvDwNausEJ?with_counts=true`);
+    if (response.ok) {
+      const res = await response.json();
+      memberCount.value = res.approximate_member_count;
+    } else {
+      toast.error("Failed to fetch member count");
+      console.error('Unexpected member count response status:', response.status);
+    }
+  } catch (error) {
+    toast.error("Failed to fetch member count");
+    console.error('Failed to fetch member count:', error);
+  }
+}
+fetchMemberCount()
 
 const songSearch = ref("");
 
@@ -101,7 +118,7 @@ const songSearch = ref("");
         <h1 class="text-center font-bold text-2xl">Elara Community</h1>
         <div class="flex flex-row w-full justify-center gap-1 mt-1.5 items-center">
           <div class="h-2.5 w-2.5 rounded-full bg-green-600"></div>
-          <h2 class="text-center text-gray-300 ">650+ Members</h2>
+          <h2 class="text-center text-gray-300 ">{{memberCount}} Members</h2>
         </div>
         <div class="w-2/3 h-full flex self-center items-center justify-center">
           <a class="w-full text-center py-3 rounded bg-cl12 border-2 border-cl12" target="_blank" href="https://discord.egts.ca">Join <strong>Elara Community</strong></a>
