@@ -1,40 +1,37 @@
-# EGTSWebUI
+# EGTSWebUI - Full Stack Web Application
 
-This template should help get you started developing with Vue 3 in Vite.
+## Overview
 
-## Recommended IDE Setup
+EGTSWebUI serves as a Web UI for Nijiiro JPN36 designed specifically for managing **user customization features** and **access code authentication**. It handles user data, game sessions, and various customization settings for the desktop version of the game, allowing users to personalize their experience while ensuring secure login and data management.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Features
 
-## Type Support for `.vue` Imports in TS
+### 1. **User Customization**
+   - Users can customize game skins, music libraries, and in-game settings.
+   - Easy access to manage favorited songs
+   - Preferences and customizations are saved and applied when users log into the desktop game.
+   - Data is stored securely and can be updated by the user at any time.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+### 2. **Game Session Management**
+   - Real-time synchronization with the game to track user progress and game sessions.
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+### 3. **Access Code Management**
+   - Add/remove in-game access codes 
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+## Tech Stack
 
-## Customize configuration
+### **Front-End**
+   - **Vue**: A JavaScript framework used for building dynamic, reusable components and user interfaces.
+   - **TypeScript**: A strongly typed superset of JavaScript that enhances code quality and developer productivity by adding static typing.
+   - **Tailwind CSS**: Utility-first CSS framework for fast and smooth design.
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+### **Back-End**
+   - **Go**: Server-side logic for handling RESTful API requests and secure authentication.
+   - **SQLite**: Database for storing user data, game sessions, and customizations.
 
-## Project Setup
+## License
+EGTSWebUI is licensed under the GNU General Public License v3.0.
 
-```sh
-npm install
-```
+For more details, refer to the [GPL 3.0 License](https://www.gnu.org/licenses/gpl-3.0.html).
 
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
+Feel free to use, modify, and contribute, but remember to share your improvements under the same license.
