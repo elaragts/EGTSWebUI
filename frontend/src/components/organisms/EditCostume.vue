@@ -65,96 +65,106 @@ watch(() => swatchColorLimb.value, (val) => {
 <template>
   <div class="bg-cl5 rounded-xl m-1 h-full p-8 flex flex-col">
     <h1 class="text-4xl font-bold mb-5">Costume Options</h1>
-    <form class="text-xl flex flex-col mx-2 space-y-2" @submit.prevent="profileStore.uploadProfile()">
-      <div class="flex flex-col border-b border-cl6 px-2 w-full md:w-1/2">
-        <label for="head" class="text- mt-0.5">Head</label>
-        <select id="head"
-                v-model="profileStore.costumeOptions.currentHead"
-                class="w-full bg-transparent focus:outline-none focus:ring-0 focus:border-gray-200 h-10 text-base">
-          <option v-for="(option) in headOptions" :key="option.id" :value="option.id">
-            {{ option.id + " - " + option.englishName }}
-          </option>
-        </select>
-      </div>
-      <div class="flex flex-col border-b border-cl6 px-2 w-full md:w-1/2">
-        <label for="body" class="text-m mt-0.5">Body</label>
-        <select id="body"
-                v-model="profileStore.costumeOptions.currentBody"
-                class="w-full bg-transparent focus:outline-none focus:ring-0 focus:border-gray-200 h-10 text-base">
-          <option v-for="(option) in bodyOptions" :key="option.id" :value="option.id">
-            {{ option.id + " - " + option.englishName }}
-          </option>
-        </select>
-      </div>
-      <div class="flex flex-col border-b border-cl6 px-2 w-full md:w-1/2">
-        <label for="face" class="text-m mt-0.5">Face</label>
-        <select id="face"
-                v-model="profileStore.costumeOptions.currentFace"
-                class="w-full bg-transparent focus:outline-none focus:ring-0 focus:border-gray-200 h-10 text-base">
-          <option v-for="(option) in faceOptions" :key="option.id" :value="option.id">
-            {{ option.id + " - " + option.englishName }}
-          </option>
-        </select>
-      </div>
-      <div class="flex flex-col border-b border-cl6 px-2 w-full md:w-1/2">
-        <label for="kigurumi" class="text-m mt-0.5">Kigurumi</label>
-        <select id="kigurumi"
-                v-model="profileStore.costumeOptions.currentKigurumi"
-                class="w-full bg-transparent focus:outline-none focus:ring-0 focus:border-gray-200 h-10 text-base">
-          <option v-for="(option) in kigurumiOptions" :key="option.id" :value="option.id">
-            {{ option.id + " - " + option.englishName }}
-          </option>
-        </select>
-      </div>
-      <div class="flex flex-col border-b border-cl6 px-2 w-full md:w-1/2">
-        <label for="puchi" class="text-m mt-0.5">Puchi</label>
-        <select id="puchi"
-                v-model="profileStore.costumeOptions.currentPuchi"
-                class="w-full bg-transparent focus:outline-none focus:ring-0 focus:border-gray-200 h-10 text-base">
-          <option v-for="(option) in puchiOptions" :key="option.id" :value="option.id">
-            {{ option.id + " - " + option.englishName }}
-          </option>
-        </select>
-      </div>
+    <form class="text-xl flex flex-row h-full mx-2" @submit.prevent="profileStore.uploadProfile()">
+      <div class="flex flex-col w-1/2 justify-between">
+        <div class="flex flex-col border-b border-cl6 px-2 w-full">
+          <label for="head" >Head</label>
+          <select id="head"
+                  v-model="profileStore.costumeOptions.currentHead"
+                  class="w-full bg-transparent focus:outline-none focus:ring-0 focus:border-gray-200 h-10 text-base">
+            <option v-for="(option) in headOptions" :key="option.id" :value="option.id">
+              {{ option.id + " - " + option.englishName }}
+            </option>
+          </select>
+        </div>
+        <div class="flex flex-col border-b border-cl6 px-2 w-full">
+          <label for="body" class="text-m mt-1">Body</label>
+          <select id="body"
+                  v-model="profileStore.costumeOptions.currentBody"
+                  class="w-full bg-transparent focus:outline-none focus:ring-0 focus:border-gray-200 h-10 text-base">
+            <option v-for="(option) in bodyOptions" :key="option.id" :value="option.id">
+              {{ option.id + " - " + option.englishName }}
+            </option>
+          </select>
+        </div>
+        <div class="flex flex-col border-b border-cl6 px-2 w-full">
+          <label for="face" class="text-m mt-1">Face</label>
+          <select id="face"
+                  v-model="profileStore.costumeOptions.currentFace"
+                  class="w-full bg-transparent focus:outline-none focus:ring-0 focus:border-gray-200 h-10 text-base">
+            <option v-for="(option) in faceOptions" :key="option.id" :value="option.id">
+              {{ option.id + " - " + option.englishName }}
+            </option>
+          </select>
+        </div>
+        <div class="flex flex-col border-b border-cl6 px-2 w-full">
+          <label for="kigurumi" class="text-m mt-1">Kigurumi</label>
+          <select id="kigurumi"
+                  v-model="profileStore.costumeOptions.currentKigurumi"
+                  class="w-full bg-transparent focus:outline-none focus:ring-0 focus:border-gray-200 h-10 text-base">
+            <option v-for="(option) in kigurumiOptions" :key="option.id" :value="option.id">
+              {{ option.id + " - " + option.englishName }}
+            </option>
+          </select>
+        </div>
+        <div class="flex flex-col border-b border-cl6 px-2 w-full">
+          <label for="puchi" class="text-m mt-1">Puchi</label>
+          <select id="puchi"
+                  v-model="profileStore.costumeOptions.currentPuchi"
+                  class="w-full bg-transparent focus:outline-none focus:ring-0 focus:border-gray-200 h-10 text-base">
+            <option v-for="(option) in puchiOptions" :key="option.id" :value="option.id">
+              {{ option.id + " - " + option.englishName }}
+            </option>
+          </select>
+        </div>
 
-      <h3 class="font-bold">Color Settings</h3>
-      <div class="flex">
-        <div class="flex flex-col text-center w-full md:w-2/12">
-          <label for="bodyColor" class="text-sm mb-1">Body</label>
-          <VSwatches id="bodyColor"
-                     v-model="swatchColorBody"
-                     :swatches="colorOptions"
-                     show-border
-                     swatch-size="30"
-                     :spacing-size=3
-                     shapes="circles"
-                     row-length=5
-          />
+        <h3 class="font-bold mt-2 mb-3">Color Settings</h3>
+        <div class="flex">
+          <div class="flex flex-col text-center w-full md:w-1/3">
+            <label for="bodyColor" class="text-sm mb-1">Body</label>
+            <VSwatches id="bodyColor"
+                       v-model="swatchColorBody"
+                       :swatches="colorOptions"
+                       show-border
+                       swatch-size="30"
+                       :spacing-size=3
+                       shapes="circles"
+                       row-length=5
+            />
+          </div>
+          <div class="flex flex-col text-center w-full md:w-1/3">
+            <label for="faceColor" class="text-sm mb-1">Face</label>
+            <VSwatches id="faceColor"
+                       v-model="swatchColorFace"
+                       :swatches="colorOptions"
+                       show-border
+                       swatch-size="30"
+                       :spacing-size=3
+                       shapes="circles"
+                       row-length=5
+            />
+          </div>
+          <div class="flex flex-col text-center w-full md:w-1/3">
+            <label for="limbColor" class="text-sm mb-1">Limb</label>
+            <VSwatches id="limbColor"
+                       v-model="swatchColorLimb"
+                       :swatches="colorOptions"
+                       show-border
+                       swatch-size="30"
+                       :spacing-size=3
+                       shapes="circles"
+                       row-length=5
+            />
+          </div>
         </div>
-        <div class="flex flex-col text-center w-full md:w-2/12">
-          <label for="faceColor" class="text-sm mb-1">Face</label>
-          <VSwatches id="faceColor"
-                     v-model="swatchColorFace"
-                     :swatches="colorOptions"
-                     show-border
-                     swatch-size="30"
-                     :spacing-size=3
-                     shapes="circles"
-                     row-length=5
-          />
-        </div>
-        <div class="flex flex-col text-center w-full md:w-2/12">
-          <label for="limbColor" class="text-sm mb-1">Limb</label>
-          <VSwatches id="limbColor"
-                     v-model="swatchColorLimb"
-                     :swatches="colorOptions"
-                     show-border
-                     swatch-size="30"
-                     :spacing-size=3
-                     shapes="circles"
-                     row-length=5
-          />
-        </div>
+      </div>
+      <div class="flex flex-col w-1/2 h-full justify-center">
+        <button
+            class="w-1/2 self-center p-2 text-base font-bold border-cl6 bg-cl6 text-cl5 rounded-lg border-2 shadow hover:bg-opacity-80 hover:transition-all"
+            type="submit"
+        >
+          Save
+        </button>
       </div>
     </form>
   </div>
