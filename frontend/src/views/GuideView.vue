@@ -80,7 +80,7 @@
         <br/>
         EGTS WebUI:
         <br/>
-        <a href="https://egts.ca/" class="text-cl6 hover:underline">https://egts.ca/</a>
+        <a href="https://legacy.egts.ca/" class="text-cl6 hover:underline">https://legacy.egts.ca/</a>
       </p>
       <p class="mb-4">
         EGTS Discord:
