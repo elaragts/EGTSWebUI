@@ -18,7 +18,7 @@ const authStore = useAuthStore();
         </div>
         <div
             class="text-xl flex flex-col md:flex-row p-4 mb:2 md:p-0 justify-center md:justify-end md:items-center space-x-0 md:space-x-4 w-full md:w-auto">
-            <a href="https://egts.ca:5000/" class="block py-2 px-3 text-cl5 rounded font-[Roboto] md:text-2xl sm:text-xl md:bg-transparent md:p-0 hover:text-cl6 mx-auto md:mx-0">LegacyWebUI</a>
+            <a href="https://legacy.egts.ca" class="block py-2 px-3 text-cl5 rounded font-[Roboto] md:text-2xl sm:text-xl md:bg-transparent md:p-0 hover:text-cl6 mx-auto md:mx-0">LegacyWebUI</a>
             <NavItem title="Guide" to="/guide"/>
 <!--            <NavItem title="Leaderboard" to="/leaderboard"/>-->
             <NavItem v-if="!authStore.isAuthenticated" title="Log In" to="/login"/>

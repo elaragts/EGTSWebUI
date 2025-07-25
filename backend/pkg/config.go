@@ -7,12 +7,13 @@ import (
 )
 
 type Config struct {
-	Port          string `json:"port"`
-	TaikoDBPath   string `json:"taikoDBPath"`
-	AuthDBPath    string `json:"authDBPath"`
-	DatatablePath string `json:"datatablePath"`
-	DistPath      string `json:"distPath"`
-	SessionSecret string `json:"sessionSecret"`
+	Port           string `json:"port"`
+	TaikoDBPath    string `json:"taikoDBPath"`
+	AuthDBPath     string `json:"authDBPath"`
+	DatatablePath  string `json:"datatablePath"`
+	DistPath       string `json:"distPath"`
+	LegacyWebUIURL string `json:"legacyWebUIPath"`
+	SessionSecret  string `json:"sessionSecret"`
 }
 
 var ConfigVars Config

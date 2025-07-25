@@ -118,13 +118,16 @@ func GetStats() (model.Stats, error) {
 
 func GetPublicProfile(baid uint) (model.PublicProfile, error) {
 	var profile model.PublicProfile
-	var costumeDataStr string
-
+	var currentBody, currentFace, currentHead, currentKigurumi, currentPuchi int
 	err := taikoStmts.GetPublicProfile.QueryRow(sql.Named("baid", baid)).Scan(
 		&profile.MyDonName,
 		&profile.Title,
 		&profile.AchievementDisplayDifficulty,
-		&costumeDataStr, // Costume data as a JSON string
+		&currentBody,
+		&currentFace,
+		&currentHead,
+		&currentKigurumi,
+		&currentPuchi,
 		&profile.ColorBody,
 		&profile.ColorFace,
 		&profile.PlayCount,
@@ -147,10 +150,8 @@ func GetPublicProfile(baid uint) (model.PublicProfile, error) {
 		return model.PublicProfile{}, err
 	}
 
-	err = json.Unmarshal([]byte(costumeDataStr), &profile.CostumeData)
-	if err != nil {
-		return model.PublicProfile{}, err
-	}
+	profile.CostumeData = [5]int{currentKigurumi, currentHead, currentBody, currentFace, currentPuchi}
+
 	return profile, nil
 }
 

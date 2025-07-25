@@ -7,8 +7,10 @@ import (
 )
 
 type Config struct {
-	Version  string             `json:"version"`
-	Releases map[string]Release `json:"releases"`
+	Version                string             `json:"version"`
+	Releases               map[string]Release `json:"releases"`
+	ManualQuickDownloadURI string             `json:"quickDownloadURI"`
+	ManualFullDownloadURI  string             `json:"fullDownloadURI"`
 }
 
 type Release struct {

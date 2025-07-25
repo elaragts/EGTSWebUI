@@ -10,5 +10,7 @@
         "deleteCabinet": "01.0",
         "minimumQuickDownloadVer": "2.0"
     }
-  }
+  },
+  "quickDownloadURI": "https://www.google.com",
+  "fullDownloadURI": "https://www.egts.ca"
 }

@@ -12,5 +12,5 @@ func main() {
 	updater.InitConfig()
 	database.InitDBs(pkg.ConfigVars.TaikoDBPath, pkg.ConfigVars.AuthDBPath)
 	pkg.InitDatatable(pkg.ConfigVars.DatatablePath)
-	api.Run(pkg.ConfigVars.Port, pkg.ConfigVars.DistPath)
+	api.Run(pkg.ConfigVars.Port, pkg.ConfigVars.LegacyWebUIURL, pkg.ConfigVars.DistPath)
 }

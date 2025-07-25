@@ -15,6 +15,15 @@ type UpdaterHandler struct{}
 func (a UpdaterHandler) GetUpdaterVersion(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(updater.UpdaterVars.Version))
 }
+func (a UpdaterHandler) GetQuickDownload(w http.ResponseWriter, r *http.Request) {
+	url := updater.UpdaterVars.ManualQuickDownloadURI
+	http.Redirect(w, r, url, http.StatusFound)
+}
+
+func (a UpdaterHandler) GetFullDownload(w http.ResponseWriter, r *http.Request) {
+	url := updater.UpdaterVars.ManualFullDownloadURI
+	http.Redirect(w, r, url, http.StatusFound)
+}
 
 func (a UpdaterHandler) Releases(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")

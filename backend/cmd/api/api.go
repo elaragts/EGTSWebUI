@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func Run(port string, distPath string) {
+func Run(port, legacyWebUIURL, distPath string) {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
@@ -19,6 +19,7 @@ func Run(port string, distPath string) {
 	r.Mount("/api", apiRoutes())
 	r.Mount("/auth", authRoutes())
 	r.Mount("/updater", updaterRoutes())
+	r.Get("/legacy", http.RedirectHandler(legacyWebUIURL, http.StatusMovedPermanently).ServeHTTP)
 	//r.Get("/guide", func(w http.ResponseWriter, r *http.Request) {
 	//	http.Redirect(w, r, "https://rentry.org/TaikoPublic", http.StatusFound)
 	//})
@@ -78,6 +79,9 @@ func updaterRoutes() chi.Router {
 	updaterHandler := handlers.UpdaterHandler{}
 	r.Get("/version", updaterHandler.GetUpdaterVersion)
 	r.Post("/releases/{name}", updaterHandler.Releases)
+	r.Get("/quick_download", updaterHandler.GetQuickDownload)
+	r.Get("/full_download", updaterHandler.GetFullDownload)
+
 	return r
 }
 
