@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import LoginView from '../views/LoginView.vue'
+// import LoginView from '../views/LoginView.vue'
 import LogoutView from '../views/LogoutView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import GuideView from '../views/GuideView.vue'
@@ -13,6 +13,7 @@ import EditSongOptions from "@/components/organisms/EditSongOptions.vue";
 import EditCostume from "@/components/organisms/EditCostume.vue";
 import FavSongsView from "@/views/FavSongsView.vue";
 import SettingsView from "@/views/SettingsView.vue";
+import DisabledView from '@/views/DisabledView.vue'
 
 const router = createRouter({
     history: createWebHistory("/"),
@@ -25,7 +26,9 @@ const router = createRouter({
         {
             path: '/login',
             name: 'login',
-            component: LoginView
+            // Disabling EGTS Web UI until further notice
+            // component: LoginView
+            component: DisabledView
         },
         {
             path: '/logout',
